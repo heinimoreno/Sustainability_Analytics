@@ -1,0 +1,14 @@
+---
+output:
+  html_document:
+    code_folding: hide
+urlcolor: blue
+---
+
+```{r child = 'Knitr_setup.Rmd'}
+```
+
+# Introduction
+Test
+
+
