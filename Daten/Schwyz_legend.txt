@@ -1,0 +1,137 @@
+Bundesamt für Meteorologie und Klimatologie, MeteoSchweiz
+Operation Center 1
+Postfach 257
+8058 Zürich-Flughafen
+
+stn yyyyMMddHHmm
+
+stn Stationskürzel
+y   Jahr
+M   Monat
+d   Tag
+H   Stunde
+m   Minute
+
+Zeitangaben in UTC: 00:40 UTC = 02:40 Sommerzeit
+                              = 01:40 Winterzeit
+
+Zeitbezug bei Stundenwerten, sofern in der Parameterbeschreibung nicht anders vermerkt: HH  = (HH-1):01 - HH:00
+Beispiel: 13 = beinhaltet Messperiode von 12:01 bis 13:00 
+
+Fehlende Messwerte sind gekenntzeichnet mit '-'
+
+Qualitätsinformationen: Die Legende zu den Qualitätsinformationen ist zu finden unter: https://gate.meteoswiss.ch/idaweb/text/datenqualitaet_legende_de.pdf
+
+ 
+
+
+
+
+Stationen
+---------
+stn       Name                                 Parameter        Datenquelle                                        Länge/Breite             Koordinaten [km] Höhe ü. M. [m]
+SWZ       Schwyz                               hns010d0         MeteoSchweiz                                       8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               hns002d0         MeteoSchweiz                                       8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               hns003d0         MeteoSchweiz                                       8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               hns004d0         MeteoSchweiz                                       8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               hns005d0         MeteoSchweiz                                       8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               hns000d0         MeteoSchweiz                                       8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               hto000d0         MeteoSchweiz                                       8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               t24200ds         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               t12200ds         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               t18200ds         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               t06200ds         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               tre200nx         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               tre200nn         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               tre200n0         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               tre200dx         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               tre200dn         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               tre200d0         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               tre200jx         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               tre200jn         unknown                                            8°39'/47°01'             691646/208412    479
+SWZ       Schwyz                               tre200j0         unknown                                            8°39'/47°01'             691646/208412    479
+INNSWZ    Schwyz                               hns010d0         unknown                                            8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               hns002d0         unknown                                            8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               hns003d0         unknown                                            8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               hns004d0         unknown                                            8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               hns005d0         unknown                                            8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               hns000d0         unknown                                            8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               hto000d0         unknown                                            8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               t24200ds         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               t12200ds         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               t18200ds         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               t06200ds         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               tre200nx         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               tre200nn         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               tre200n0         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               tre200dx         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               tre200dn         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               tre200d0         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               tre200jx         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               tre200jn         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+INNSWZ    Schwyz                               tre200j0         inNET Monitoring AG                                8°39'/47°01'             691911/208039    470
+
+Parameter
+---------
+          Einheit                              Beschreibung
+hns010d0  cm                                   Neuschneehöhe; 10-Tagessumme - 240 h
+qhns010d0 Code                                 de/legend.parameter.dq
+mhns010d0 Code                                 Mutationsinformation für hns010d0
+hns002d0  cm                                   Neuschneehöhe; 2-Tagessumme - 48 h
+qhns002d0 Code                                 de/legend.parameter.dq
+mhns002d0 Code                                 Mutationsinformation für hns002d0
+hns003d0  cm                                   Neuschneehöhe; 3-Tagessumme - 72 h
+qhns003d0 Code                                 de/legend.parameter.dq
+mhns003d0 Code                                 Mutationsinformation für hns003d0
+hns004d0  cm                                   Neuschneehöhe; 4-Tagessumme - 96 h
+qhns004d0 Code                                 de/legend.parameter.dq
+mhns004d0 Code                                 Mutationsinformation für hns004d0
+hns005d0  cm                                   Neuschneehöhe; 5-Tagessumme - 120 h
+qhns005d0 Code                                 de/legend.parameter.dq
+mhns005d0 Code                                 Mutationsinformation für hns005d0
+hns000d0  cm                                   Neuschneehöhe; Tagessumme 6 UTC - 6 UTC Folgetag
+qhns000d0 Code                                 de/legend.parameter.dq
+mhns000d0 Code                                 Mutationsinformation für hns000d0
+hto000d0  cm                                   Schneehöhe; Morgenmessung von 6 UTC
+qhto000d0 Code                                 de/legend.parameter.dq
+mhto000d0 Code                                 Mutationsinformation für hto000d0
+t24200ds  °C                                   Lufttemperatur 2 m über Boden; Momentanwert 00 UTC
+qt24200ds Code                                 de/legend.parameter.dq
+mt24200ds Code                                 Mutationsinformation für t24200ds
+t12200ds  °C                                   Lufttemperatur 2 m über Boden; Momentanwert 12 UTC
+qt12200ds Code                                 de/legend.parameter.dq
+mt12200ds Code                                 Mutationsinformation für t12200ds
+t18200ds  °C                                   Lufttemperatur 2 m über Boden; Momentanwert 18 UTC
+qt18200ds Code                                 de/legend.parameter.dq
+mt18200ds Code                                 Mutationsinformation für t18200ds
+t06200ds  °C                                   Lufttemperatur 2 m über Boden; Momentanwert 6 UTC
+qt06200ds Code                                 de/legend.parameter.dq
+mt06200ds Code                                 Mutationsinformation für t06200ds
+tre200nx  °C                                   Lufttemperatur 2 m über Boden; Nachtmaximum (18 UTC aktueller Tag bis 6 UTC Folgetag)
+qtre200nx Code                                 de/legend.parameter.dq
+mtre200nx Code                                 Mutationsinformation für tre200nx
+tre200nn  °C                                   Lufttemperatur 2 m über Boden; Nachtminimum (18 UTC Vortag bis 6 UTC aktueller Tag)
+qtre200nn Code                                 de/legend.parameter.dq
+mtre200nn Code                                 Mutationsinformation für tre200nn
+tre200n0  °C                                   Lufttemperatur 2 m über Boden; Nachtmittel (18 UTC Vortag bis 6 UTC aktueller Tag)
+qtre200n0 Code                                 de/legend.parameter.dq
+mtre200n0 Code                                 Mutationsinformation für tre200n0
+tre200dx  °C                                   Lufttemperatur 2 m über Boden; Tagesmaximum
+qtre200dx Code                                 de/legend.parameter.dq
+mtre200dx Code                                 Mutationsinformation für tre200dx
+tre200dn  °C                                   Lufttemperatur 2 m über Boden; Tagesminimum
+qtre200dn Code                                 de/legend.parameter.dq
+mtre200dn Code                                 Mutationsinformation für tre200dn
+tre200d0  °C                                   Lufttemperatur 2 m über Boden; Tagesmittel
+qtre200d0 Code                                 de/legend.parameter.dq
+mtre200d0 Code                                 Mutationsinformation für tre200d0
+tre200jx  °C                                   Lufttemperatur 2 m über Boden; Tagmaximum (6 UTC  bis 18 UTC)
+qtre200jx Code                                 de/legend.parameter.dq
+mtre200jx Code                                 Mutationsinformation für tre200jx
+tre200jn  °C                                   Lufttemperatur 2 m über Boden; Tagminimum (6 UTC  bis 18 UTC)
+qtre200jn Code                                 de/legend.parameter.dq
+mtre200jn Code                                 Mutationsinformation für tre200jn
+tre200j0  °C                                   Lufttemperatur 2 m über Boden; Tagmittel ( 6 UTC  bis 18 UTC)
+qtre200j0 Code                                 de/legend.parameter.dq
+mtre200j0 Code                                 Mutationsinformation für tre200j0
+
