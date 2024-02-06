@@ -21,5 +21,14 @@ urlcolor: blue
 
 ```
 
+```{r child = 'EDA.Rmd'}
 
+```
 
+```{r child = 'Time Series.Rmd'}
+
+```
+
+```{r child = 'Conclusion.Rmd'}
+
+```
