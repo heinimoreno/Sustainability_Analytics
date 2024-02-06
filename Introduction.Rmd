@@ -1,0 +1,29 @@
+---
+output:
+  html_document:
+    code_folding: hide
+urlcolor: blue
+---
+
+```{r child = 'Knitr_setup.Rmd'}
+```
+
+# Introduction
+Test
+
+## Motivation
+Test
+
+## Research Question
+Test
+
+## Method
+Test
+
+## Assumption
+Test
+
+## Limitation
+Test
+
+
