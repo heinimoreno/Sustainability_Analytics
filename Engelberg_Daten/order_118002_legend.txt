@@ -1,0 +1,165 @@
+Bundesamt für Meteorologie und Klimatologie, MeteoSchweiz
+Operation Center 1
+Postfach 257
+8058 Zürich-Flughafen
+
+stn yyyyMMddHHmm
+
+stn Stationskürzel
+y   Jahr
+M   Monat
+d   Tag
+H   Stunde
+m   Minute
+
+Zeitangaben in UTC: 00:40 UTC = 02:40 Sommerzeit
+                              = 01:40 Winterzeit
+
+Zeitbezug bei Stundenwerten, sofern in der Parameterbeschreibung nicht anders vermerkt: HH  = (HH-1):01 - HH:00
+Beispiel: 13 = beinhaltet Messperiode von 12:01 bis 13:00 
+
+Fehlende Messwerte sind gekenntzeichnet mit '-'
+
+Qualitätsinformationen: Die Legende zu den Qualitätsinformationen ist zu finden unter: https://gate.meteoswiss.ch/idaweb/text/datenqualitaet_legende_de.pdf
+
+ 
+
+
+
+
+Stationen
+---------
+stn       Name                                 Parameter        Datenquelle                                        Länge/Breite             Koordinaten [km] Höhe ü. M. [m]
+ENG       Engelberg                            ths200dv         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            th9120dv         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre200dv         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            ths200d0         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            t24200ds         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            t12200ds         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            t18200ds         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            t06200ds         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre200nx         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre200nn         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre200n0         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre200dx         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre200dn         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre200d0         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre200jx         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre200jn         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre200j0         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre005nn         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre005dx         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre005dn         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            tre005d0         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            hns010d0         WSL-Institut für Schnee- und Lawinenforschung SLF  8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            hns002d0         WSL-Institut für Schnee- und Lawinenforschung SLF  8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            hns003d0         WSL-Institut für Schnee- und Lawinenforschung SLF  8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            hns004d0         WSL-Institut für Schnee- und Lawinenforschung SLF  8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            hns005d0         WSL-Institut für Schnee- und Lawinenforschung SLF  8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            hns000j0         WSL-Institut für Schnee- und Lawinenforschung SLF  8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            hns000d0         WSL-Institut für Schnee- und Lawinenforschung SLF  8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            htoautj0         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            htoautd0         MeteoSchweiz                                       8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            hto000j0         WSL-Institut für Schnee- und Lawinenforschung SLF  8°25'/46°49'             674160/186069    1035
+ENG       Engelberg                            hto000d0         WSL-Institut für Schnee- und Lawinenforschung SLF  8°25'/46°49'             674160/186069    1035
+
+Parameter
+---------
+          Einheit                              Beschreibung
+ths200dv  °C                                   Lufttemperatur 2 m über Boden; Abweichung des homogenen Tagesmittels (statistisch abgeleitet) von der Norm 6190
+qths200dv Code                                 de/legend.parameter.dq
+mths200dv Code                                 Mutationsinformation für ths200dv
+th9120dv  °C                                   Lufttemperatur 2 m über Boden; Abweichung des homogenen Tagesmittels (statistisch abgeleitet) von der Norm 9120
+qth9120dv Code                                 de/legend.parameter.dq
+mth9120dv Code                                 Mutationsinformation für th9120dv
+tre200dv  °C                                   Lufttemperatur 2 m über Boden; Abweichung des Tagesmittels von der Norm
+qtre200dv Code                                 de/legend.parameter.dq
+mtre200dv Code                                 Mutationsinformation für tre200dv
+ths200d0  °C                                   Lufttemperatur 2 m über Boden; homogenes Tagesmittel (statistisch abgeleitet)
+qths200d0 Code                                 de/legend.parameter.dq
+mths200d0 Code                                 Mutationsinformation für ths200d0
+t24200ds  °C                                   Lufttemperatur 2 m über Boden; Momentanwert 00 UTC
+qt24200ds Code                                 de/legend.parameter.dq
+mt24200ds Code                                 Mutationsinformation für t24200ds
+t12200ds  °C                                   Lufttemperatur 2 m über Boden; Momentanwert 12 UTC
+qt12200ds Code                                 de/legend.parameter.dq
+mt12200ds Code                                 Mutationsinformation für t12200ds
+t18200ds  °C                                   Lufttemperatur 2 m über Boden; Momentanwert 18 UTC
+qt18200ds Code                                 de/legend.parameter.dq
+mt18200ds Code                                 Mutationsinformation für t18200ds
+t06200ds  °C                                   Lufttemperatur 2 m über Boden; Momentanwert 6 UTC
+qt06200ds Code                                 de/legend.parameter.dq
+mt06200ds Code                                 Mutationsinformation für t06200ds
+tre200nx  °C                                   Lufttemperatur 2 m über Boden; Nachtmaximum (18 UTC aktueller Tag bis 6 UTC Folgetag)
+qtre200nx Code                                 de/legend.parameter.dq
+mtre200nx Code                                 Mutationsinformation für tre200nx
+tre200nn  °C                                   Lufttemperatur 2 m über Boden; Nachtminimum (18 UTC Vortag bis 6 UTC aktueller Tag)
+qtre200nn Code                                 de/legend.parameter.dq
+mtre200nn Code                                 Mutationsinformation für tre200nn
+tre200n0  °C                                   Lufttemperatur 2 m über Boden; Nachtmittel (18 UTC Vortag bis 6 UTC aktueller Tag)
+qtre200n0 Code                                 de/legend.parameter.dq
+mtre200n0 Code                                 Mutationsinformation für tre200n0
+tre200dx  °C                                   Lufttemperatur 2 m über Boden; Tagesmaximum
+qtre200dx Code                                 de/legend.parameter.dq
+mtre200dx Code                                 Mutationsinformation für tre200dx
+tre200dn  °C                                   Lufttemperatur 2 m über Boden; Tagesminimum
+qtre200dn Code                                 de/legend.parameter.dq
+mtre200dn Code                                 Mutationsinformation für tre200dn
+tre200d0  °C                                   Lufttemperatur 2 m über Boden; Tagesmittel
+qtre200d0 Code                                 de/legend.parameter.dq
+mtre200d0 Code                                 Mutationsinformation für tre200d0
+tre200jx  °C                                   Lufttemperatur 2 m über Boden; Tagmaximum (6 UTC  bis 18 UTC)
+qtre200jx Code                                 de/legend.parameter.dq
+mtre200jx Code                                 Mutationsinformation für tre200jx
+tre200jn  °C                                   Lufttemperatur 2 m über Boden; Tagminimum (6 UTC  bis 18 UTC)
+qtre200jn Code                                 de/legend.parameter.dq
+mtre200jn Code                                 Mutationsinformation für tre200jn
+tre200j0  °C                                   Lufttemperatur 2 m über Boden; Tagmittel ( 6 UTC  bis 18 UTC)
+qtre200j0 Code                                 de/legend.parameter.dq
+mtre200j0 Code                                 Mutationsinformation für tre200j0
+tre005nn  °C                                   Lufttemperatur 5 cm über Gras; Nachtminimum (17:40 Vortag bis 5:40 aktueller Tag)
+qtre005nn Code                                 de/legend.parameter.dq
+mtre005nn Code                                 Mutationsinformation für tre005nn
+tre005dx  °C                                   Lufttemperatur 5 cm über Gras; Tagesmaximum
+qtre005dx Code                                 de/legend.parameter.dq
+mtre005dx Code                                 Mutationsinformation für tre005dx
+tre005dn  °C                                   Lufttemperatur 5 cm über Gras; Tagesminimum
+qtre005dn Code                                 de/legend.parameter.dq
+mtre005dn Code                                 Mutationsinformation für tre005dn
+tre005d0  °C                                   Lufttemperatur 5 cm über Gras; Tagesmittel
+qtre005d0 Code                                 de/legend.parameter.dq
+mtre005d0 Code                                 Mutationsinformation für tre005d0
+hns010d0  cm                                   Neuschneehöhe; 10-Tagessumme - 240 h
+qhns010d0 Code                                 de/legend.parameter.dq
+mhns010d0 Code                                 Mutationsinformation für hns010d0
+hns002d0  cm                                   Neuschneehöhe; 2-Tagessumme - 48 h
+qhns002d0 Code                                 de/legend.parameter.dq
+mhns002d0 Code                                 Mutationsinformation für hns002d0
+hns003d0  cm                                   Neuschneehöhe; 3-Tagessumme - 72 h
+qhns003d0 Code                                 de/legend.parameter.dq
+mhns003d0 Code                                 Mutationsinformation für hns003d0
+hns004d0  cm                                   Neuschneehöhe; 4-Tagessumme - 96 h
+qhns004d0 Code                                 de/legend.parameter.dq
+mhns004d0 Code                                 Mutationsinformation für hns004d0
+hns005d0  cm                                   Neuschneehöhe; 5-Tagessumme - 120 h
+qhns005d0 Code                                 de/legend.parameter.dq
+mhns005d0 Code                                 Mutationsinformation für hns005d0
+hns000j0  cm                                   Neuschneehöhe; Abendmessung von 18 UTC
+qhns000j0 Code                                 de/legend.parameter.dq
+mhns000j0 Code                                 Mutationsinformation für hns000j0
+hns000d0  cm                                   Neuschneehöhe; Tagessumme 6 UTC - 6 UTC Folgetag
+qhns000d0 Code                                 de/legend.parameter.dq
+mhns000d0 Code                                 Mutationsinformation für hns000d0
+htoautj0  cm                                   Schneehöhe (automatisch gemessen); Abendmessung von 18 UTC
+qhtoautj0 Code                                 de/legend.parameter.dq
+mhtoautj0 Code                                 Mutationsinformation für htoautj0
+htoautd0  cm                                   Schneehöhe (automatisch gemessen); Morgenmessung von 6 UTC
+qhtoautd0 Code                                 de/legend.parameter.dq
+mhtoautd0 Code                                 Mutationsinformation für htoautd0
+hto000j0  cm                                   Schneehöhe; Abendmessung von 18 UTC
+qhto000j0 Code                                 de/legend.parameter.dq
+mhto000j0 Code                                 Mutationsinformation für hto000j0
+hto000d0  cm                                   Schneehöhe; Morgenmessung von 6 UTC
+qhto000d0 Code                                 de/legend.parameter.dq
+mhto000d0 Code                                 Mutationsinformation für hto000d0
+
