@@ -8,5 +8,167 @@ urlcolor: blue
 ```
 
 # EDA
+```{r}
+# Laden der installierten Pakete
+library(ggplot2)
+library(dplyr)
+library(stats)
+library(zoo)
 
-Test
+# Pfad zum Unterordner
+data_folder <- "Daten/"
+
+# Funktion zum Extrahieren des Standortnamens aus dem Dateinamen
+get_location <- function(file_name) {
+  if (grepl("Engelberg", file_name)) {
+    return("Engelberg")
+  } else if (grepl("Luzern", file_name)) {
+    return("Luzern")
+  } else {
+    return("Unknown")
+  }
+}
+
+# Laden der Datensätze für Engelberg und Luzern
+Engelberg <- read.csv(paste0(data_folder, "Messreihe_Engelberg.csv"))
+Luzern <- read.csv(paste0(data_folder, "Messreihe_Luzern.csv"))
+
+# Extrahieren des Standortnamens und Hinzufügen zur Datensätze
+Engelberg$Location <- get_location("Messreihe_Engelberg.csv")
+Luzern$Location <- get_location("Messreihe_Luzern.csv")
+
+# Zusammenführen der Daten
+combined_data <- rbind(Engelberg, Luzern)
+
+# Umwandlung der Spalten 'Year' und 'Month' in ein Datumsformat
+combined_data$Date <- as.Date(paste(combined_data$Year, combined_data$Month, "01", sep = "-"))
+
+# Gruppieren nach Jahr und Standort und Berechnen des Durchschnitts pro Jahr
+summary_data <- combined_data %>%
+  group_by(Year, Location) %>%
+  summarise(Avg_Temperature = mean(Temperature),
+            Avg_Precipitation = mean(Precipitation))
+
+# Plotten der Temperaturzeitreihe für Engelberg und Luzern
+ggplot(summary_data, aes(x = Year, y = Avg_Temperature, color = Location)) +
+  geom_line() +
+  labs(x = "Year", y = "Average Temperature (°C)", color = "Location") +
+  ggtitle("Average Temperature Time Series for Engelberg and Luzern") +
+  theme_minimal()
+
+# Plotten der Niederschlagszeitreihe für Engelberg und Luzern
+ggplot(summary_data, aes(x = Year, y = Avg_Precipitation, color = Location)) +
+  geom_line() +
+  labs(x = "Year", y = "Average Precipitation (mm)", color = "Location") +
+  ggtitle("Average Precipitation Time Series for Engelberg and Luzern") +
+  theme_minimal()
+
+# Gruppieren nach 5-Jahres-Schritten und Berechnen des Durchschnitts pro Zeitraum
+summary_data_5yr <- combined_data %>%
+  mutate(Year_Group = as.integer((Year - 1) %/% 5) * 5 + 1) %>%
+  group_by(Year_Group, Location) %>%
+  summarise(Avg_Temperature = mean(Temperature),
+            Avg_Precipitation = mean(Precipitation))
+
+# Plotten der Temperaturzeitreihe für Engelberg und Luzern (5-Jahres-Periode)
+ggplot(summary_data_5yr, aes(x = Year_Group, y = Avg_Temperature, color = Location)) +
+  geom_line() +
+  labs(x = "5-Year Period", y = "Average Temperature (°C)", color = "Location") +
+  ggtitle("Average Temperature Time Series for Engelberg and Luzern (5-Year Period)") +
+  theme_minimal()
+
+# Plotten der Niederschlagszeitreihe für Engelberg und Luzern (5-Jahres-Periode)
+ggplot(summary_data_5yr, aes(x = Year_Group, y = Avg_Precipitation, color = Location)) +
+  geom_line() +
+  labs(x = "5-Year Period", y = "Average Precipitation (mm)", color = "Location") +
+  ggtitle("Average Precipitation Time Series for Engelberg and Luzern (5-Year Period)") +
+  theme_minimal()
+
+# Konvertieren der aggregierten Daten in eine Zeitreihe
+temp_ts <- ts(summary_data$Avg_Temperature, start = c(1864, 1), frequency = 12)
+precip_ts <- ts(summary_data$Avg_Precipitation, start = c(1864, 1), frequency = 12)
+
+# Fehlende Werte in der Zeitreihe ersetzen (hier mit 0)
+temp_ts_filled <- na.fill(temp_ts, 0)
+precip_ts_filled <- na.fill(precip_ts, 0)
+
+# Anwenden der decompose-Funktion
+temp_decomposed <- decompose(temp_ts_filled)
+precip_decomposed <- decompose(precip_ts_filled)
+
+# Plotten der saisonalen, trendigen und saisonal bereinigten Komponenten der Temperaturzeitreihe
+plot(temp_decomposed)
+
+# Plotten der saisonalen, trendigen und saisonal bereinigten Komponenten der Niederschlagszeitreihe
+plot(precip_decomposed)
+```
+
+
+```{r}
+library(tidyverse)
+
+#### Daten einlesen ####
+
+# Engelberg
+engelberg <- read.csv("Daten/Engelberg_data.csv", sep = ';', na.strings = c('-',''))
+
+engelberg$time <- as.Date(as.character(engelberg$time), format = "%Y%m%d")
+engelberg_clean <- engelberg %>% select('stn',
+                                        'time',
+                                        'tre200nn')
+
+# NA anschauen
+str(engelberg_clean)
+summary(engelberg_clean)
+# hat 654 NA's
+
+
+# Seeboden
+seeboden <- read.csv("Daten/Seebodenalp_data.csv", sep = ';', na.strings = c('-',''))
+# Convert integer dates to Date objects
+seeboden$time <- as.Date(as.character(seeboden$time), format = "%Y%m%d")
+seeboden_clean <- seeboden %>% select('stn',
+                                      'time',
+                                      'tre200nn')
+
+# NA anschauen
+str(seeboden_clean)
+summary(seeboden_clean)
+# hat 119 NA's
+
+
+#### EDA ####
+# Histogram
+hist_engelberg <- ggplot(engelberg_clean, aes(x = tre200nn)) +
+  geom_histogram(bins = 30, fill = "blue", color = "black") +
+  labs(title = "Distribution of Engelberg tre200nn", x = "tre200nn", y = "Count")
+
+hist_seeboden <- ggplot(seeboden_clean, aes(x = tre200nn)) +
+  geom_histogram(bins = 30, fill = "orange", color = "black") +
+  labs(title = "Distribution of Seebodenalp tre200nn", x = "tre200nn", y = "Count")
+
+# Boxplot
+boxplot_engelberg <- ggplot(engelberg_clean, aes(y = tre200nn)) +
+  geom_boxplot(fill = "blue", color = "darkred") +
+  labs(title = "Boxplot of Engelberg tre200nn", y = "tre200nn")
+
+boxplot_seeboden <- ggplot(seeboden_clean, aes(y = tre200nn)) +
+  geom_boxplot(fill = "orange", color = "darkred") +
+  labs(title = "Boxplot of Seebodenalp tre200nn", y = "tre200nn")
+
+# Timeseries
+timeseries_engelberg <- ggplot(engelberg_clean, aes(x = time, y = tre200nn)) +
+  geom_line() +
+  labs(title = "Time Series of Engelberg tre200nn", x = "Time", y = "tre200nn")
+
+timeseries_seeboden <- ggplot(seeboden_clean, aes(x = time, y = tre200nn)) +
+  geom_line() +
+  labs(title = "Time Series of Seebodenalp tre200nn", x = "Time", y = "tre200nn")
+
+hist_engelberg
+hist_seeboden
+boxplot_engelberg
+boxplot_seeboden
+timeseries_engelberg
+timeseries_seeboden
+```

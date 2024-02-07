@@ -1,6 +1,7 @@
 # Laden der installierten Pakete
 library(ggplot2)
 library(dplyr)
+library(stats)
 
 # Pfad zum Unterordner
 data_folder <- "Daten/"
@@ -70,3 +71,27 @@ ggplot(summary_data, aes(x = Year_Group, y = Avg_Precipitation, color = Location
   labs(x = "5-Year Period", y = "Average Precipitation (mm)", color = "Location") +
   ggtitle("Average Precipitation Time Series for Engelberg and Luzern") +
   theme_minimal()
+
+# Gruppieren nach Jahr und Standort und Berechnen des Durchschnitts pro Jahr
+summary_data <- combined_data %>%
+  group_by(Year, Location) %>%
+  summarise(Avg_Temperature = mean(Temperature),
+            Avg_Precipitation = mean(Precipitation))
+
+# Konvertieren der aggregierten Daten in eine Zeitreihe
+temp_ts <- ts(summary_data$Avg_Temperature, start = c(1864, 1), frequency = 12)
+precip_ts <- ts(summary_data$Avg_Precipitation, start = c(1864, 1), frequency = 12)
+
+# Fehlende Werte in der Zeitreihe ersetzen (hier mit 0)
+temp_ts_filled <- na.fill(temp_ts, 0)
+precip_ts_filled <- na.fill(precip_ts, 0)
+
+# Anwenden der decompose-Funktion
+temp_decomposed <- decompose(temp_ts_filled)
+precip_decomposed <- decompose(precip_ts_filled)
+
+# Plotten der saisonalen, trendigen und saisonal bereinigten Komponenten der Temperaturzeitreihe
+plot(temp_decomposed)
+
+# Plotten der saisonalen, trendigen und saisonal bereinigten Komponenten der Niederschlagszeitreihe
+plot(precip_decomposed)
