@@ -19,8 +19,8 @@ engelberg$time <- as.Date(as.character(engelberg$time), format = "%Y%m%d")
 engelberg_clean <- engelberg %>% select(
                                         'time',
                                         'tre200nn') %>% 
-  rename('temp' = 'tre200nn') %>%
-  na_replace(fill=0)
+  rename('temp' = 'tre200nn') ##%>%
+  ###na_replace(fill=0)
 
 # NA anschauen
 str(engelberg_clean)
