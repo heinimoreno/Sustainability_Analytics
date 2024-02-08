@@ -4,9 +4,7 @@
 library(tidyverse) # for data wrangling
 library(lubridate) # date manipulation
 library(TSstudio) # time series interactive viz
-library(forecast) # time series library
 library(tseries) # for adf.test
-library(tseries)
 library(astsa)
 library(imputeTS)
 library(forecast)
@@ -56,6 +54,7 @@ ts_engelberg <- ts(data = engelberg_clean$temp,
 engelberg_clean_trend <- lm(engelberg_clean$temp~engelberg_clean$time)
 plot(ts_engelberg)
 abline(engelberg_clean_trend, col = 'red')
+abline(engelberg_homog_trend, col = 'blue')
 
 #autoplot(ts_engelberg)
 
@@ -86,14 +85,14 @@ temp_comp_random_y_ts <- ts(temp_comp_random_y$Random)
 arima(temp_comp_random_y_ts, c(1,0,0))
 
 
-#### Data only winter ####
+#### > Winter ####
 
 engelberg_filtered <- engelberg_clean %>%
   # Assuming 'time' is already a Date object. If not, convert it first with as.Date()
   filter(year(time) > 1989) %>%
   filter(month(time) %in% c(12, 1, 2, 3)) 
 
-#### > per Month below 0 ####
+#### >>Monthly below 0 ####
 
 # below 0 per month
 monthly_below_zero <- engelberg_filtered %>%
@@ -134,7 +133,7 @@ month_auto.1 <- auto.arima(ts_month)
 month_auto
 month_auto.1
 
-#### > daily temp in the winter months ####
+#### >> daily temp in the winter months ####
 # If you want to see the result
 glimpse(engelberg_filtered)
 
@@ -170,14 +169,15 @@ arima(temp_comp_random_ts, c(1,0,0))
 
 # To do
 #### Soll PACF vs. PACF Winter
-#### Nur einen Winter rausnehmen und dann Arima ####
+#### > 1 Winter ####
 one_engelberg <- engelberg_filtered %>% 
-  filter(year(time) > 1999 &
-           year(time) < 2003)
+  filter(year(time) == 2000)
+         # > 1999 &
+         #   year(time) < 2003)
 
 glimpse(one_engelberg)
 
-ts_one <- ts(data = one_engelberg$temp, frequency = 122)
+ts_one <- ts(data = one_engelberg$temp, frequency = 30)
 autoplot(ts_one)
 
 # Decompose
@@ -186,24 +186,32 @@ plot(ts_one_dc)
 
 # Stationary?
 adf.test(ts_one)
-## it is stationary
 
-acf(ts_one)
-acf(ts_one_dc$random,na.action=na.pass)
+ts_one_diff <- na.omit(diff(ts_one))
+adf.test(ts_one_diff)
+## it is stationary
+ts_one_diff_dc <- decompose(ts_one_diff)
+
+
+acf(ts_one_diff)
+acf(ts_one_diff_dc$random,na.action=na.pass)
 # Plotting
-PAutoCorrelation_m <- pacf(ts_one_dc$random,na.action=na.pass, plot=FALSE)
-plot(PAutoCorrelation_m, main = "Winter month PACF 2000")
+PAutoCorrelation_m <- pacf(ts_one_diff_dc$random,na.action=na.pass, plot=FALSE)
+plot(PAutoCorrelation_m, main = "1 winter PACF 2000")
 
 # Arima Model
 # # Fitting to PACF 
 window <- list(start=2000,end=2002)
 
 temp_comp_random_one <- data.frame(Date=time(ts_one_dc$random), Random=ts_one_dc$random)
-temp_comp_random_one %<>% filter(Date>=window$start&Date<window$end)
+#temp_comp_random_one %<>% filter(Date>=window$start&Date<window$end)
 temp_comp_random_one_ts <- ts(temp_comp_random_one$Random)
 
-arima(temp_comp_random_ts, c(1,0,0))
+arima(temp_comp_random_ts, c(2,0,0))
 
 
   #### Nachfolgende Tage unter 0
 
+#### der langfristige Trend vergleichen --> abline
+#### Homogenisierte Daten
+#### ca. lm von observed und trend 
