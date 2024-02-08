@@ -52,6 +52,8 @@ ts_engelberg <- ts(data = engelberg_clean$temp,
                frequency = 365)
 
 engelberg_clean_trend <- lm(engelberg_clean$temp~engelberg_clean$time)
+engelberg_homog_trend <- lm(combined_data$Temperature~combined_data$Date)
+
 plot(ts_engelberg)
 abline(engelberg_clean_trend, col = 'red')
 abline(engelberg_homog_trend, col = 'blue')
