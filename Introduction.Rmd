@@ -9,21 +9,42 @@ urlcolor: blue
 ```
 
 # Introduction
-Test
+Nestled within Switzerland's alpine landscape, the ski resorts Engelberg-Titlis and Rigi-Kaltbad, 
+alongside the communities of Engelberg and Küssnacht, are facing the challenges posed by a shifting 
+climate. The variability of snowfall has become a critical concern for these winter destinations, 
+which are integral to the local economy due to their draw for tourism. In this context, the role of 
+snowmaking machines emerges as a focal point of investigation for sustaining ski seasons and, by extension, 
+the economic health of these regions.
 
-## Motivation
-Test
+Our analysis entails a comprehensive review of meteorological and snow cover data spanning from 1990 to 2024, 
+accompanied by an examination of guest occupancy rates from 2013 onwards. This period includes the unique 
+circumstances of the COVID-19 pandemic, necessitating adjusted models to account for the impact on tourism 
+and resort operation.
+
+Our research navigates through these varied datasets with an eye towards the future. The overarching question 
+we seek to address is one of longevity and adaptability: Can snowmaking technology continue to support ski 
+resort operations in the face of environmental and climatic changes? This inquiry is further refined by our 
+commitment to the principles encapsulated in Sustainable Development Goals 7, 8, and 9, ensuring that our 
+approach to energy efficiency, economic growth, and innovation remains in line with global sustainability efforts.
 
 ## Research Question
-Test
+In a scientific pursuit to inform strategic foresight for ski resorts, our core research question is articulated 
+as follows: "How might we evaluate the efficacy of snow-making across various ski resorts to ensure optimal planning 
+and sustainability for future seasons?"
 
 ## Method
-Test
+Our investigation employs time series analysis using R to dissect decades of weather and snow data, alongside tourism 
+occupancy rates. Key R packages aid in data cleansing and trend decomposition, revealing patterns and cyclicality. 
+We perform correlation analysis to uncover relationships between snowmaking, weather, and tourism. The predictive phase 
+uses the ARIMA model to forecast future snowmaking needs and the sustainability of ski seasons, providing data-driven 
+insights for strategic planning and long-term resort viability.
 
-## Assumption
-Test
-
-## Limitation
-Test
+## Assumptions and Limitations
+This study is conducted with the acknowledgment of several constraints. Notably, gaps exist within our datasets, with 
+certain years missing valuable data points, and location-specific weather information proving elusive. Additionally, 
+hotel occupancy rates, a key indicator of economic vitality, are available only from 2013 forward. These limitations 
+necessitate assumptions to bridge data voids and infer trends. While such estimations enable a continuous analytical 
+narrative, they also introduce a degree of uncertainty. As such, the findings and predictions presented must be 
+interpreted with an understanding of these inherent constraints.
 
 

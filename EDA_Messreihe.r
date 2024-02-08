@@ -1,19 +1,7 @@
----
-output:
-  html_document:
-    code_folding: hide
-urlcolor: blue
----
-```{r child = 'Knitr_setup.Rmd'}
-```
-
-# EDA
-```{r}
 # Laden der installierten Pakete
 library(ggplot2)
 library(dplyr)
 library(stats)
-library(zoo)
 
 # Pfad zum Unterordner
 data_folder <- "Daten/"
@@ -64,25 +52,31 @@ ggplot(summary_data, aes(x = Year, y = Avg_Precipitation, color = Location)) +
   theme_minimal()
 
 # Gruppieren nach 5-Jahres-Schritten und Berechnen des Durchschnitts pro Zeitraum
-summary_data_5yr <- combined_data %>%
+summary_data <- combined_data %>%
   mutate(Year_Group = as.integer((Year - 1) %/% 5) * 5 + 1) %>%
   group_by(Year_Group, Location) %>%
   summarise(Avg_Temperature = mean(Temperature),
             Avg_Precipitation = mean(Precipitation))
 
-# Plotten der Temperaturzeitreihe für Engelberg und Luzern (5-Jahres-Periode)
-ggplot(summary_data_5yr, aes(x = Year_Group, y = Avg_Temperature, color = Location)) +
+# Plotten der Temperaturzeitreihe für Engelberg und Luzern
+ggplot(summary_data, aes(x = Year_Group, y = Avg_Temperature, color = Location)) +
   geom_line() +
   labs(x = "5-Year Period", y = "Average Temperature (°C)", color = "Location") +
-  ggtitle("Average Temperature Time Series for Engelberg and Luzern (5-Year Period)") +
+  ggtitle("Average Temperature Time Series for Engelberg and Luzern") +
   theme_minimal()
 
-# Plotten der Niederschlagszeitreihe für Engelberg und Luzern (5-Jahres-Periode)
-ggplot(summary_data_5yr, aes(x = Year_Group, y = Avg_Precipitation, color = Location)) +
+# Plotten der Niederschlagszeitreihe für Engelberg und Luzern
+ggplot(summary_data, aes(x = Year_Group, y = Avg_Precipitation, color = Location)) +
   geom_line() +
   labs(x = "5-Year Period", y = "Average Precipitation (mm)", color = "Location") +
-  ggtitle("Average Precipitation Time Series for Engelberg and Luzern (5-Year Period)") +
+  ggtitle("Average Precipitation Time Series for Engelberg and Luzern") +
   theme_minimal()
+
+# Gruppieren nach Jahr und Standort und Berechnen des Durchschnitts pro Jahr
+summary_data <- combined_data %>%
+  group_by(Year, Location) %>%
+  summarise(Avg_Temperature = mean(Temperature),
+            Avg_Precipitation = mean(Precipitation))
 
 # Konvertieren der aggregierten Daten in eine Zeitreihe
 temp_ts <- ts(summary_data$Avg_Temperature, start = c(1864, 1), frequency = 12)
@@ -101,74 +95,3 @@ plot(temp_decomposed)
 
 # Plotten der saisonalen, trendigen und saisonal bereinigten Komponenten der Niederschlagszeitreihe
 plot(precip_decomposed)
-```
-
-
-```{r}
-library(tidyverse)
-
-#### Daten einlesen ####
-
-# Engelberg
-engelberg <- read.csv("Daten/Engelberg_data.csv", sep = ';', na.strings = c('-',''))
-
-engelberg$time <- as.Date(as.character(engelberg$time), format = "%Y%m%d")
-engelberg_clean <- engelberg %>% select('stn',
-                                        'time',
-                                        'tre200nn')
-
-# NA anschauen
-str(engelberg_clean)
-summary(engelberg_clean)
-# hat 654 NA's
-
-
-# Seeboden
-seeboden <- read.csv("Daten/Seebodenalp_data.csv", sep = ';', na.strings = c('-',''))
-# Convert integer dates to Date objects
-seeboden$time <- as.Date(as.character(seeboden$time), format = "%Y%m%d")
-seeboden_clean <- seeboden %>% select('stn',
-                                      'time',
-                                      'tre200nn')
-
-# NA anschauen
-str(seeboden_clean)
-summary(seeboden_clean)
-# hat 119 NA's
-
-
-#### EDA ####
-# Histogram
-hist_engelberg <- ggplot(engelberg_clean, aes(x = tre200nn)) +
-  geom_histogram(bins = 30, fill = "blue", color = "black") +
-  labs(title = "Distribution of Engelberg tre200nn", x = "tre200nn", y = "Count")
-
-hist_seeboden <- ggplot(seeboden_clean, aes(x = tre200nn)) +
-  geom_histogram(bins = 30, fill = "orange", color = "black") +
-  labs(title = "Distribution of Seebodenalp tre200nn", x = "tre200nn", y = "Count")
-
-# Boxplot
-boxplot_engelberg <- ggplot(engelberg_clean, aes(y = tre200nn)) +
-  geom_boxplot(fill = "blue", color = "darkred") +
-  labs(title = "Boxplot of Engelberg tre200nn", y = "tre200nn")
-
-boxplot_seeboden <- ggplot(seeboden_clean, aes(y = tre200nn)) +
-  geom_boxplot(fill = "orange", color = "darkred") +
-  labs(title = "Boxplot of Seebodenalp tre200nn", y = "tre200nn")
-
-# Timeseries
-timeseries_engelberg <- ggplot(engelberg_clean, aes(x = time, y = tre200nn)) +
-  geom_line() +
-  labs(title = "Time Series of Engelberg tre200nn", x = "Time", y = "tre200nn")
-
-timeseries_seeboden <- ggplot(seeboden_clean, aes(x = time, y = tre200nn)) +
-  geom_line() +
-  labs(title = "Time Series of Seebodenalp tre200nn", x = "Time", y = "tre200nn")
-
-hist_engelberg
-hist_seeboden
-boxplot_engelberg
-boxplot_seeboden
-timeseries_engelberg
-timeseries_seeboden
-```
