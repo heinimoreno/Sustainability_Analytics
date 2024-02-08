@@ -65,6 +65,8 @@ engelberg_filtered <- engelberg_clean %>%
   filter(year(time) > 1989) %>%
   filter(month(time) %in% c(12, 1, 2, 3)) 
 
+#### > per Month below 0 ####
+
 # below 0 per month
 monthly_below_zero <- engelberg_filtered %>%
   filter(temp < 0) %>%
@@ -98,8 +100,53 @@ acf(ts_month)
 acf(ts_month_dc$random,na.action=na.pass)
 pacf(ts_month_dc$random,na.action=na.pass)
 
-#### > Arima Model ####
+# Arima Model 
 month_auto <- auto.arima(ts_month, D=1, d=1)
+month_auto.1 <- auto.arima(ts_month)
 month_auto
+month_auto.1
 
+#### > daily temp in the winter months ####
+# If you want to see the result
+glimpse(engelberg_filtered)
+
+ts_daily <- ts(data = engelberg_filtered$temp,
+               start = c(1990,01),
+               frequency = 365)
+autoplot(ts_daily)
+
+# Decompose
+ts_daily_dc <- decompose(ts_daily)
+plot(ts_daily_dc)
+
+# Stationary?
+adf.test(ts_daily)
+## it is stationary
+
+acf(ts_daily)
+acf(ts_daily_dc$random,na.action=na.pass)
+pacf(ts_daily_dc$random,na.action=na.pass)
+
+# Arima Model
+# # Fitting to PACF 
+window <- list(start=1990,end=2023)
+
+temp_comp_random <- data.frame(Date=time(ts_daily_dc$random), Random=ts_daily_dc$random)
+temp_comp_random %<>% filter(Date>=window$start&Date<window$end)
+temp_comp_random_ts <- ts(temp_comp_random$Random)
+
+arima(temp_comp_random_ts, c(1,0,0))
+
+
+daily_auto <- auto.arima(ts_daily, D=1, d=1)
+daily_auto.1 <- auto.arima(ts_daily)
+daily_auto
+daily_auto.1
+
+
+# To do
+#### NA als 0 ####
+#### Soll PACF vs. PACF Winter
+#### Nur einen Winter rausnehmen und dann Arima
+#### Nachfolgende Tage unter 0
 
