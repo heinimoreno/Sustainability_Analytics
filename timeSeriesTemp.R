@@ -1,4 +1,5 @@
 # Only Time Series
+
 #### load libraries ####
 library(tidyverse) # for data wrangling
 library(lubridate) # date manipulation
@@ -16,10 +17,10 @@ library(magrittr)
 engelberg <- read.csv("Daten/Engelberg_data.csv",sep=';', na.strings=c('-',''))
 
 engelberg$time <- as.Date(as.character(engelberg$time), format = "%Y%m%d")
-engelberg_clean <- engelberg %>% select(
-                                        'time',
+engelberg_clean <- engelberg %>% select('time',
                                         'tre200nn') %>% 
-  rename('temp' = 'tre200nn') ##%>%
+  rename('temp' = 'tre200nn') %>%
+  filter(year(time) > 1989)
   ###na_replace(fill=0)
 
 # NA anschauen
@@ -27,6 +28,14 @@ str(engelberg_clean)
 summary(engelberg_clean)
 glimpse(engelberg_clean)
 anyNA(engelberg_clean)
+
+# Where are they missing
+#Get dates for which temperatures are missing
+missingCases <- which(is.na(engelberg_clean$temp)==TRUE)
+u <- engelberg_clean$time[missingCases]
+max(u)
+min(u)
+# alle finden in the 1982
 # hat 0 NA's
 
 #Zeitreihe
@@ -34,11 +43,15 @@ range(engelberg_clean$time)
 interval(start = head(engelberg_clean$date)[1], end = tail(engelberg_clean$date)[1])
 
 #### Time Series ####
+engelberg_clean <- engelberg_clean %>%
+  # Assuming 'time' is already a Date object. If not, convert it first with as.Date()
+  filter(year(time) > 1989) %>%
+  na_replace(fill=0)
 
-# create TS-object
 ts_engelberg <- ts(data = engelberg_clean$temp,
                start = c(1990,01),
                frequency = 365)
+
 autoplot(ts_engelberg)
 
 # Decompose
@@ -51,8 +64,12 @@ adf.test(ts_engelberg)
 
 acf(ts_engelberg)
 acf(ts_engelberg_dc$random,na.action=na.pass)
-pacf(ts_engelberg_dc$random,na.action=na.pass)
+# Plot the PACF
+pacf(ts_engelberg_dc$random, na.action = na.pass)
 
+# Plotting
+PAutoCorrelation <- pacf(ts_engelberg_dc$random, na.action = na.pass, plot=FALSE)
+plot(PAutoCorrelation, main = "Whole Year PACF")
 
 #### > Arima Model ####
 # engelberg_auto <- auto.arima(ts_engelberg, D=1, d=1, seasonal = T)
@@ -125,7 +142,9 @@ adf.test(ts_daily)
 
 acf(ts_daily)
 acf(ts_daily_dc$random,na.action=na.pass)
-pacf(ts_daily_dc$random,na.action=na.pass)
+# Plotting
+PAutoCorrelation_m <- pacf(ts_daily_dc$random,na.action=na.pass, plot=FALSE)
+plot(PAutoCorrelation_m, main = "Winter month PACF")
 
 # Arima Model
 # # Fitting to PACF 
@@ -138,14 +157,13 @@ temp_comp_random_ts <- ts(temp_comp_random$Random)
 arima(temp_comp_random_ts, c(1,0,0))
 
 
-daily_auto <- auto.arima(ts_daily, D=1, d=1)
-daily_auto.1 <- auto.arima(ts_daily)
-daily_auto
-daily_auto.1
+# daily_auto <- auto.arima(ts_daily, D=1, d=1)
+# daily_auto.1 <- auto.arima(ts_daily)
+# daily_auto
+# daily_auto.1
 
 
 # To do
-#### NA als 0 ####
 #### Soll PACF vs. PACF Winter
 #### Nur einen Winter rausnehmen und dann Arima
 #### Nachfolgende Tage unter 0
