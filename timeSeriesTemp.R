@@ -172,7 +172,6 @@ plot(f, main = "Forecast for the Next 5 Winter Months",
      xlab = "Time", ylab = "Forecast")
 
 
-
 #### >> daily temp in the winter months ####
 # If you want to see the result
 glimpse(engelberg_filtered)
