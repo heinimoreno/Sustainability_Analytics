@@ -9,9 +9,14 @@ library(astsa)
 library(imputeTS)
 library(forecast)
 library(magrittr)
-# Clean Files
 
-# Engelberg
+#### Clean Files ####
+
+#homogenisierte Daten
+Engelberg_homogenisiert <- read.csv(paste0(data_folder, "Messreihe_Engelberg.csv"))
+temp_homo_ts <- ts(summary_data$Avg_Temperature, start = c(1864, 1), frequency = 12)
+
+# Engelberg einlesen
 engelberg <- read.csv("Daten/Engelberg_data.csv",sep=';', na.strings=c('-',''))
 
 engelberg$time <- as.Date(as.character(engelberg$time), format = "%Y%m%d")
@@ -19,7 +24,6 @@ engelberg_clean <- engelberg %>% select('time',
                                         'tre200nn') %>% 
   rename('temp' = 'tre200nn') %>%
   filter(year(time) > 1989)
-  ###na_replace(fill=0)
 
 # NA anschauen
 str(engelberg_clean)
@@ -36,31 +40,52 @@ min(u)
 # alle finden in the 1982
 # hat 0 NA's
 
-#Zeitreihe
+# Wie lange
 range(engelberg_clean$time)
 interval(start = head(engelberg_clean$date)[1], end = tail(engelberg_clean$date)[1])
 
 #### Time Series ####
 #### > Year ####
 engelberg_clean <- engelberg_clean %>%
-  # Assuming 'time' is already a Date object. If not, convert it first with as.Date()
   filter(year(time) > 1989) %>%
   na_replace(fill=0)
 
 ts_engelberg <- ts(data = engelberg_clean$temp,
-               start = c(1990,01),
+               start = c(1990,01,01),
                frequency = 365)
 
+# Trend Visualisierung
+# > Tägliche Daten von 1990-2023
 engelberg_clean_trend <- lm(engelberg_clean$temp~engelberg_clean$time)
-engelberg_homog_trend <- lm(combined_data$Temperature~combined_data$Date)
 
 plot(ts_engelberg)
 abline(engelberg_clean_trend, col = 'red')
+
+# >> Monatliche Daten von 1990-2023 mit Trendlinie von Homogen.
+temp_yr <- engelberg_clean %>%
+  mutate(temp_raw=replace_na(temp,0)) %>%
+  group_by(Year=year(time)) %>%
+  filter(Year>=1990 & Year<=2023) %>%
+  summarize(temp_yr=mean(temp_raw)) %>%
+  ungroup()
+temp_mn <- engelberg_clean %>%
+  mutate(temp_raw=replace_na(temp,0)) %>%
+  group_by(Year=year(time), Month=month(time)) %>%
+  filter(Year>=1990 & Year<=2023) %>%
+  summarize(temp_mn=mean(temp_raw), .groups='keep') %>%
+  ungroup()
+
+temp_mn_ts <- ts(temp_mn$temp_mn, start=c(temp_mn$Year[1],temp_mn$Month[1]), frequency=12)
+plot(temp_mn_ts)
+
+# Visualisierung des Trendes
+fresh_snow_trend <- lm(temp_mn$temp_mn~temp_mn$Year)
+engelberg_homog_trend <- lm(Engelberg_homogenisiert$Temperature~Engelberg_homogenisiert$Year)
+plot(temp_mn_ts, xlab='Year', ylab='Average Temp.')
+abline(fresh_snow_trend, col = 'red')
 abline(engelberg_homog_trend, col = 'blue')
 
-#autoplot(ts_engelberg)
-
-# Decompose
+# Yearly Data decomposing
 ts_engelberg_dc <- decompose(ts_engelberg)
 plot(ts_engelberg_dc)
 
@@ -212,8 +237,20 @@ temp_comp_random_one_ts <- ts(temp_comp_random_one$Random)
 arima(temp_comp_random_ts, c(2,0,0))
 
 
-  #### Nachfolgende Tage unter 0
+#### Nachfolgende Tage unter 0
 
-#### der langfristige Trend vergleichen --> abline
-#### Homogenisierte Daten
-#### ca. lm von observed und trend 
+#### ca. lm von observed und trend
+
+
+
+
+
+
+
+
+
+
+
+
+
+
