@@ -86,4 +86,10 @@ f <- forecast(month_auto_k, level=c(95), h=5*4)
 plot(f, main = "Forecast for the Next 5 Winter Months", 
      xlab = "Time", ylab = "Forecast")
 
+# Assuming 'f' is a forecast object that has a 'mean' component
+y_lower <- min(-10, min(f$mean))
+y_upper <- 60
 
+plot(f, main = "Forecast for the Next 5 Winter Months", 
+     xlab = "Time", ylab = "Forecast",
+     ylim = c(y_lower, y_upper))
