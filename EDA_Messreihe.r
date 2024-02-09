@@ -163,6 +163,13 @@ lines(trend_data$time, trend_data$fitted_values, col = 'red')
 
 
 
+
+
+
+
+
+
+#---------------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 # Laden der Bibliotheken
 library(tidyverse)
@@ -208,11 +215,46 @@ lm_engelberg_messreihe <- lm(Temperature ~ Year + Month, data = engelberg_messre
 # Vorhersagen für die Trendlinie
 engelberg_messreihe$fitted_values <- predict(lm_engelberg_messreihe, newdata = engelberg_messreihe)
 
+# Lineare Regression für die zickzackförmigen Messdaten der Engelberg-Messreihe
+lm_engelberg_messreihe_zickzack <- lm(Temperature ~ Date, data = engelberg_messreihe)
+
+# Vorhersagen für die Trendlinie der zickzackförmigen Daten
+engelberg_messreihe$fitted_values_zickzack <- predict(lm_engelberg_messreihe_zickzack, newdata = engelberg_messreihe)
+
 # Plotten der Temperaturzeitreihen und Trendlinien
 ggplot() +
-  geom_line(data = engelberg_messreihe, aes(x = Date, y = Temperature), color = "blue") +
-  geom_line(data = engelberg_clean, aes(x = time, y = temp), color = "green") +
-  geom_line(data = engelberg_messreihe, aes(x = Date, y = fitted_values), linetype = "dashed", color = "red") +
-  geom_line(data = trend_data, aes(x = time, y = fitted_values), linetype = "dashed", color = "orange") +
+  geom_line(data = engelberg_clean, aes(x = time, y = temp), lwd = 1) +
+  geom_line(data = trend_data, aes(x = time, y = fitted_values), color = "blue", lwd = 2) +
+  geom_line(data = engelberg_messreihe, aes(x = Date, y = fitted_values_zickzack), color = "red", lwd = 2) +
   labs(x = "Date", y = "Temperature (°C)", title = "Temperature Time Series and Trend Lines for Engelberg") +
   theme_minimal()
+
+
+# Berechnen der Werte der linearen Regression für die Temperaturtrendlinie
+summary_engelberg_clean_trend <- summary(engelberg_clean_trend)
+print(summary_engelberg_clean_trend)
+
+# Berechnen der Werte der linearen Regression für die zickzackförmigen Messdaten der Engelberg-Messreihe
+summary_lm_engelberg_messreihe_zickzack <- summary(lm_engelberg_messreihe_zickzack)
+print(summary_lm_engelberg_messreihe_zickzack)
+
+
+# Koeffizienten für die Temperaturtrendlinie
+coefficients_trend <- coef(engelberg_clean_trend)
+slope_trend <- coefficients_trend[2]  # Steigung
+intercept_trend <- coefficients_trend[1]  # Y-Achsenabschnitt
+
+# Koeffizienten für die monatlichen Daten
+coefficients_monthly <- coef(lm_engelberg_messreihe)
+slope_monthly <- coefficients_monthly[2]  # Steigung
+intercept_monthly <- coefficients_monthly[1]  # Y-Achsenabschnitt
+
+# Koeffizienten für die zickzackförmigen Messdaten der Engelberg-Messreihe
+coefficients_zickzack <- coef(lm_engelberg_messreihe_zickzack)
+slope_zickzack <- coefficients_zickzack[2]  # Steigung
+intercept_zickzack <- coefficients_zickzack[1]  # Y-Achsenabschnitt
+
+# Ausgabe der Steigungen
+print(paste("Steigung der Temperaturtrendlinie:", slope_trend))
+print(paste("Steigung der monatlichen Daten:", slope_monthly))
+print(paste("Steigung der zickzackförmigen Messdaten:", slope_zickzack))
