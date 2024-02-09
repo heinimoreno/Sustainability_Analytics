@@ -37,7 +37,7 @@ kuessnacht_filtered <- kuessnacht_clean %>%
 #### >>Monthly below 0 ####
 
 # below 0 per month
-monthly_below_zero <- engelberg_filtered %>%
+monthly_below_zero <- kuessnacht_filtered %>%
   filter(temp < 0) %>%
   mutate(year = year(time),
          month = month(time)) %>%
@@ -79,7 +79,7 @@ month_auto_k.1
 # Forecasting
 f <- forecast(month_auto_k, level=c(95), h=5*4)
 
-last_year <- as.numeric(format(time(ts_month_k)[length(ts_month_k)], "%Y"))
+#last_year <- as.numeric(format(time(ts_month_k)[length(ts_month_k)], "%Y"))
 
 
 # Plotting the forecast
