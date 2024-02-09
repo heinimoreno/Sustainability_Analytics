@@ -39,29 +39,29 @@ summary(seeboden_clean)
 # Histogram
 ggplot(engelberg_clean, aes(x = tre200nn)) +
   geom_histogram(bins = 30, fill = "blue", color = "black") +
-  labs(title = "Distribution of Engelberg tre200nn", x = "tre200nn", y = "Count")
+  labs(title = "Distribution of Engelberg Temperature", x = "Temperature", y = "Count")
 
 ggplot(seeboden_clean, aes(x = tre200nn)) +
   geom_histogram(bins = 30, fill = "orange", color = "black") +
-  labs(title = "Distribution of Seebodenalp tre200nn", x = "tre200nn", y = "Count")
+  labs(title = "Distribution of Seebodenalp Temperature", x = "Temperature", y = "Count")
 
 # Boxplot
 ggplot(engelberg_clean, aes(y = tre200nn)) +
   geom_boxplot(fill = "blue", color = "darkred") +
-  labs(title = "Boxplot of Engelberg tre200nn", y = "tre200nn")
+  labs(title = "Boxplot of Engelberg Temperature", y = "Temperature")
 
 ggplot(seeboden_clean, aes(y = tre200nn)) +
   geom_boxplot(fill = "orange", color = "darkred") +
-  labs(title = "Boxplot of Seebodenalp tre200nn", y = "tre200nn")
+  labs(title = "Boxplot of Seebodenalp Temperature", y = "Temperature")
 
 # Timeseries
 ggplot(engelberg_clean, aes(x = time, y = tre200nn)) +
   geom_line() +
-  labs(title = "Time Series of Engelberg tre200nn", x = "Time", y = "tre200nn")
+  labs(title = "Time Series of Engelberg Temperature", x = "Time", y = "Temperature")
 
 ggplot(seeboden_clean, aes(x = time, y = tre200nn)) +
   geom_line() +
-  labs(title = "Time Series of Seebodenalp tre200nn", x = "Time", y = "tre200nn")
+  labs(title = "Time Series of Seebodenalp Temperature", x = "Time", y = "Temperature")
 
 
 #### Time Series Lecture ####
