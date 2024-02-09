@@ -164,13 +164,18 @@ month_auto.1
 # Forecasting
 f <- forecast(month_auto, level=c(95), h=5*4)
 
-last_year <- as.numeric(format(time(ts_month)[length(ts_month)], "%Y"))
-
 
 # Plotting the forecast
 plot(f, main = "Forecast for the Next 5 Winter Months", 
      xlab = "Time", ylab = "Forecast")
 
+# Assuming 'f' is a forecast object that has a 'mean' component
+y_lower <- min(-10, min(f$mean))
+y_upper <- 60
+
+plot(f, main = "Forecast for the Next 5 Winter Months", 
+     xlab = "Time", ylab = "Forecast",
+     ylim = c(y_lower, y_upper))
 
 #### >> daily temp in the winter months ####
 # If you want to see the result
