@@ -136,10 +136,11 @@ monthly_below_zero <- monthly_below_zero %>%
 
 # If you want to see the result
 glimpse(monthly_below_zero)
+range(monthly_below_zero$year_month)
 
 ts_month <- ts(data = monthly_below_zero$days_below_zero,
                    start = c(1990,01),
-                   frequency = 12)
+                   frequency = 4)
 autoplot(ts_month)
 
 # Decompose
@@ -159,6 +160,18 @@ month_auto <- auto.arima(ts_month, D=1, d=1)
 month_auto.1 <- auto.arima(ts_month)
 month_auto
 month_auto.1
+
+# Forecasting
+f <- forecast(month_auto, level=c(95), h=5*4)
+
+# Plotting the forecast
+plot(f)
+
+# Adding actual data from 'two_engelberg' to the plot
+# Ensure 'two_engelberg$value' is the correct reference for your actual data
+lines(seq(length(ts_one) + 1, by = 1, 
+          length.out = length(two_engelberg$temp)), 
+      two_engelberg$temp, col = "blue")
 
 #### >> daily temp in the winter months ####
 # If you want to see the result
@@ -202,6 +215,9 @@ one_engelberg <- engelberg_filtered %>%
          # > 1999 &
          #   year(time) < 2003)
 
+two_engelberg <- engelberg_filtered %>% 
+  filter(year(time) == 2001)
+
 glimpse(one_engelberg)
 
 ts_one <- ts(data = one_engelberg$temp, frequency = 30)
@@ -234,8 +250,22 @@ temp_comp_random_one <- data.frame(Date=time(ts_one_dc$random), Random=ts_one_dc
 #temp_comp_random_one %<>% filter(Date>=window$start&Date<window$end)
 temp_comp_random_one_ts <- ts(temp_comp_random_one$Random)
 
-arima(temp_comp_random_ts, c(2,0,0))
+winter_model_dc <- arima(temp_comp_random_ts, c(1,0,0))
+summary(winter_model_dc)
 
+winter_model <- arima(ts_one, c(2,0,0))
+
+# Forecasting
+f <- forecast(winter_model, level=c(95), h=length(two_engelberg$temp))
+
+# Plotting the forecast
+plot(f)
+
+# Adding actual data from 'two_engelberg' to the plot
+# Ensure 'two_engelberg$value' is the correct reference for your actual data
+lines(seq(length(ts_one) + 1, by = 1, 
+          length.out = length(two_engelberg$temp)), 
+      two_engelberg$temp, col = "blue")
 
 #### Nachfolgende Tage unter 0
 
