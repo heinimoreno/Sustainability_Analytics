@@ -164,14 +164,14 @@ month_auto.1
 # Forecasting
 f <- forecast(month_auto, level=c(95), h=5*4)
 
-# Plotting the forecast
-plot(f)
+last_year <- as.numeric(format(time(ts_month)[length(ts_month)], "%Y"))
 
-# Adding actual data from 'two_engelberg' to the plot
-# Ensure 'two_engelberg$value' is the correct reference for your actual data
-lines(seq(length(ts_one) + 1, by = 1, 
-          length.out = length(two_engelberg$temp)), 
-      two_engelberg$temp, col = "blue")
+
+# Plotting the forecast
+plot(f, main = "Forecast for the Next 5 Winter Months", 
+     xlab = "Time", ylab = "Forecast")
+
+
 
 #### >> daily temp in the winter months ####
 # If you want to see the result
