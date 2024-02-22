@@ -4,10 +4,12 @@ output:
     code_folding: hide
 urlcolor: blue
 ---
+
 ```{r child = 'Knitr_setup.Rmd'}
 ```
 
 # EDA
+
 ```{r}
 # Laden der installierten Pakete
 library(ggplot2)
@@ -103,7 +105,6 @@ plot(temp_decomposed)
 plot(precip_decomposed)
 ```
 
-
 ```{r}
 library(tidyverse)
 
@@ -117,12 +118,6 @@ engelberg_clean <- engelberg %>% select('stn',
                                         'time',
                                         'tre200nn')
 
-# NA anschauen
-str(engelberg_clean)
-summary(engelberg_clean)
-# hat 654 NA's
-
-
 # Seeboden
 seeboden <- read.csv("Daten/Seebodenalp_data.csv", sep = ';', na.strings = c('-',''))
 # Convert integer dates to Date objects
@@ -131,12 +126,28 @@ seeboden_clean <- seeboden %>% select('stn',
                                       'time',
                                       'tre200nn')
 
+```
+
+Further Data
+
+```{r}
+str(engelberg_clean)
+```
+
+```{r}
+summary(engelberg_clean)
+```
+
+```{r}
 # NA anschauen
 str(seeboden_clean)
+```
+
+```{r}
 summary(seeboden_clean)
-# hat 119 NA's
+```
 
-
+```{r warning=FALSE}
 #### EDA ####
 # Histogram
 hist_engelberg <- ggplot(engelberg_clean, aes(x = tre200nn)) +
@@ -164,11 +175,28 @@ timeseries_engelberg <- ggplot(engelberg_clean, aes(x = time, y = tre200nn)) +
 timeseries_seeboden <- ggplot(seeboden_clean, aes(x = time, y = tre200nn)) +
   geom_line() +
   labs(title = "Time Series of Seebodenalp tre200nn", x = "Time", y = "tre200nn")
+```
 
+```{r warning=FALSE}
 hist_engelberg
+```
+
+```{r warning=FALSE}
 hist_seeboden
+```
+
+```{r warning=FALSE}
 boxplot_engelberg
+```
+
+```{r warning=FALSE}
 boxplot_seeboden
+```
+
+```{r warning=FALSE}
 timeseries_engelberg
+```
+
+```{r warning=FALSE}
 timeseries_seeboden
 ```

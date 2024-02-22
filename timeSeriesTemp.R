@@ -13,7 +13,7 @@ library(magrittr)
 #### Clean Files ####
 
 #homogenisierte Daten
-Engelberg_homogenisiert <- read.csv(paste0(data_folder, "Messreihe_Engelberg.csv"))
+Engelberg_homogenisiert <- read.csv("Daten/Messreihe_Engelberg.csv")
 temp_homo_ts <- ts(summary_data$Avg_Temperature, start = c(1864, 1), frequency = 12)
 
 # Engelberg einlesen
