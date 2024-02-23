@@ -4,9 +4,302 @@ output:
     code_folding: hide
 urlcolor: blue
 ---
+
 ```{r child = 'Knitr_setup.Rmd'}
 ```
 
 # Time Series
 
-Test
+```{r load libraries, warning=FALSE, message=FALSE}
+library(tidyverse) # for data wrangling
+library(lubridate) # date manipulation
+library(TSstudio) # time series interactive viz
+library(tseries) # for adf.test
+library(astsa)
+library(imputeTS)
+library(forecast)
+library(magrittr)
+```
+
+```{r clean files, warning=FALSE, message=FALSE}
+#### Clean Files ####
+
+#homogenisierte Daten
+Engelberg_homogenisiert <- read.csv("Daten/Messreihe_Engelberg.csv")
+temp_homo_ts <- ts(summary_data$Avg_Temperature, start = c(1864, 1), frequency = 12)
+
+# Engelberg einlesen
+engelberg <- read.csv("Daten/Engelberg_data.csv",sep=';', na.strings=c('-',''))
+
+engelberg$time <- as.Date(as.character(engelberg$time), format = "%Y%m%d")
+engelberg_clean <- engelberg %>% select('time',
+                                        'tre200nn') %>% 
+  rename('temp' = 'tre200nn') %>%
+  filter(year(time) > 1989)
+
+# Where are they missing
+#Get dates for which temperatures are missing
+missingCases <- which(is.na(engelberg_clean$temp)==TRUE)
+u <- engelberg_clean$time[missingCases]
+```
+
+```{r}
+engelberg_clean <- engelberg_clean %>%
+  filter(year(time) > 1989) %>%
+  na_replace(fill=0)
+
+ts_engelberg <- ts(data = engelberg_clean$temp,
+               start = c(1990,01,01),
+               frequency = 365)
+```
+
+## Engelberg Data only 
+
+### Trend Visualizing
+
+```{r}
+# > Tägliche Daten von 1990-2023
+engelberg_clean_trend <- lm(engelberg_clean$temp~engelberg_clean$time)
+
+plot(ts_engelberg)
+abline(engelberg_clean_trend, col = 'red')
+```
+
+### Excursion: Monthly Data
+
+We take only monthly data, which has been selected via a randomized procedure, to see how the Meteo and homogenous Data look like together.
+
+```{r}
+# >> Monatliche Daten von 1990-2023 mit Trendlinie von Homogen.
+temp_yr <- engelberg_clean %>%
+  mutate(temp_raw=replace_na(temp,0)) %>%
+  group_by(Year=year(time)) %>%
+  filter(Year>=1990 & Year<=2023) %>%
+  summarize(temp_yr=mean(temp_raw)) %>%
+  ungroup()
+temp_mn <- engelberg_clean %>%
+  mutate(temp_raw=replace_na(temp,0)) %>%
+  group_by(Year=year(time), Month=month(time)) %>%
+  filter(Year>=1990 & Year<=2023) %>%
+  summarize(temp_mn=mean(temp_raw), .groups='keep') %>%
+  ungroup()
+
+temp_mn_ts <- ts(temp_mn$temp_mn, start=c(temp_mn$Year[1],temp_mn$Month[1]), frequency=12)
+```
+
+```{r}
+plot(temp_mn_ts)
+```
+
+```{r}
+# Visualisierung des Trendes
+fresh_snow_trend <- lm(temp_mn$temp_mn~temp_mn$Year)
+engelberg_homog_trend <- lm(Engelberg_homogenisiert$Temperature~Engelberg_homogenisiert$Year)
+plot(temp_mn_ts, xlab='Year', ylab='Average Temp.')
+abline(fresh_snow_trend, col = 'red')
+abline(engelberg_homog_trend, col = 'blue')
+```
+
+We will be exploring how the time series behaves for the whole year data.
+
+```{r}
+# Yearly Data decomposing
+ts_engelberg_dc <- decompose(ts_engelberg)
+plot(ts_engelberg_dc)
+```
+
+```{r}
+# Stationary?
+adf.test(ts_engelberg)
+## it is stationary
+```
+
+```{r}
+acf(ts_engelberg)
+acf(ts_engelberg_dc$random,na.action=na.pass)
+```
+
+```{r}
+# Plot the PACF
+pacf(ts_engelberg_dc$random, na.action = na.pass)
+```
+
+```{r}
+# Plotting
+PAutoCorrelation <- pacf(ts_engelberg_dc$random, na.action = na.pass, plot=FALSE)
+plot(PAutoCorrelation, main = "Whole Year PACF")
+```
+
+```{r}
+#Arima
+# # Fitting to PACF 
+window <- list(start=1990,end=2023)
+
+temp_comp_random_y <- data.frame(Date=time(ts_engelberg_dc$random), Random=ts_engelberg_dc$random)
+temp_comp_random_y %<>% filter(Date>=window$start&Date<window$end)
+temp_comp_random_y_ts <- ts(temp_comp_random_y$Random)
+arima(temp_comp_random_y_ts, c(1,0,0))
+```
+
+The result of this Arima-Model is not a good simulation. Therefore, to focus on our core question: How many days are the Ski resorts able to use the artificial snow, we will be using only the winter months.
+
+### Winter
+
+This further investigation only takes into account how many days have there been in a month where the temperature dropped below 0°.
+
+```{r}
+engelberg_filtered <- engelberg_clean %>%
+  # Assuming 'time' is already a Date object. If not, convert it first with as.Date()
+  filter(year(time) > 1989) %>%
+  filter(month(time) %in% c(12, 1, 2, 3)) 
+```
+
+```{r}
+# below 0 per month
+monthly_below_zero <- engelberg_filtered %>%
+  filter(temp < 0) %>%
+  mutate(year = year(time),
+         month = month(time)) %>%
+  group_by(year, month) %>%
+  summarise(days_below_zero = n(), .groups = "drop") %>% # Drop the grouping
+  mutate(year_month = paste(year, month, sep="-")) %>% # Create year-month column
+  select(year_month, days_below_zero) # Select only the columns you want
+
+monthly_below_zero <- monthly_below_zero %>%
+  mutate(year_month = as.Date(paste(year_month, "01", sep="-")))
+```
+
+```{r}
+ts_month <- ts(data = monthly_below_zero$days_below_zero,
+                   start = c(1990,01),
+                   frequency = 4)
+```
+
+```{r}
+autoplot(ts_month)
+```
+
+```{r}
+ts_month_dc <- decompose(ts_month)
+plot(ts_month_dc)
+```
+
+```{r}
+adf.test(ts_month)
+```
+
+The decomposed time series of monthly days that measured below 0° is stationary.
+
+```{r}
+acf(ts_month)
+acf(ts_month_dc$random,na.action=na.pass)
+```
+
+```{r}
+pacf(ts_month_dc$random,na.action=na.pass)
+```
+
+```{r}
+# Arima Model 
+month_auto <- auto.arima(ts_month, D=1, d=1)
+month_auto
+```
+
+```{r}
+month_auto.1 <- auto.arima(ts_month)
+month_auto.1
+```
+
+**Forecast** of our Arima Model
+
+```{r}
+# Forecasting
+f <- forecast(month_auto, level=c(95), h=5*4)
+
+
+# Plotting the forecast
+plot(f, main = "Forecast for the Next 5 Winter years", 
+     xlab = "Time", ylab = "Forecast")
+```
+
+```{r}
+# Assuming 'f' is a forecast object that has a 'mean' component
+y_lower <- min(-10, min(f$mean))
+y_upper <- 60
+
+plot(f, main = "Forecast for the Next 5 Winter years", 
+     xlab = "Time", ylab = "Forecast",
+     ylim = c(y_lower, y_upper))
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
