@@ -10,9 +10,11 @@ urlcolor: blue
 
 # EDA
 
-## Temperature from homogenised data source
+## Temperature from homogenous data source
 
-```{r}
+homogenous data: Adjusting historical measurements to current standards
+
+```{r message=FALSE, warning=FALSE}
 # Laden der installierten Pakete
 library(ggplot2)
 library(dplyr)
@@ -54,14 +56,15 @@ summary_data <- combined_data %>%
             Avg_Precipitation = mean(Precipitation))
 
 # Plotten der Temperaturzeitreihe für Engelberg und Luzern
-ggplot(summary_data, aes(x = Year, y = Avg_Temperature, color = Location)) +
+avg_temp_plot <- ggplot(summary_data, aes(x = Year, y = Avg_Temperature, color = Location)) +
   geom_line() +
   labs(x = "Year", y = "Average Temperature (°C)", color = "Location") +
   ggtitle("Average Temperature Time Series for Engelberg and Luzern") +
   theme_minimal()
 
 # Plotten der Niederschlagszeitreihe für Engelberg und Luzern
-ggplot(summary_data, aes(x = Year, y = Avg_Precipitation, color = Location)) +
+avg_preci_plot <- ggplot(summary_data, 
+                         aes(x = Year, y = Avg_Precipitation, color = Location)) +
   geom_line() +
   labs(x = "Year", y = "Average Precipitation (mm)", color = "Location") +
   ggtitle("Average Precipitation Time Series for Engelberg and Luzern") +
@@ -75,14 +78,15 @@ summary_data_5yr <- combined_data %>%
             Avg_Precipitation = mean(Precipitation))
 
 # Plotten der Temperaturzeitreihe für Engelberg und Luzern (5-Jahres-Periode)
-ggplot(summary_data_5yr, aes(x = Year_Group, y = Avg_Temperature, color = Location)) +
+avg_5temp_plot <- ggplot(summary_data_5yr, aes(x = Year_Group, y = Avg_Temperature, color = Location)) +
   geom_line() +
   labs(x = "5-Year Period", y = "Average Temperature (°C)", color = "Location") +
   ggtitle("Average Temperature Time Series for Engelberg and Luzern (5-Year Period)") +
   theme_minimal()
 
 # Plotten der Niederschlagszeitreihe für Engelberg und Luzern (5-Jahres-Periode)
-ggplot(summary_data_5yr, aes(x = Year_Group, y = Avg_Precipitation, color = Location)) +
+avg_5preci_plot <- ggplot(summary_data_5yr, 
+                          aes(x = Year_Group, y = Avg_Precipitation, color = Location)) +
   geom_line() +
   labs(x = "5-Year Period", y = "Average Precipitation (mm)", color = "Location") +
   ggtitle("Average Precipitation Time Series for Engelberg and Luzern (5-Year Period)") +
@@ -99,12 +103,39 @@ precip_ts_filled <- na.fill(precip_ts, 0)
 # Anwenden der decompose-Funktion
 temp_decomposed <- decompose(temp_ts_filled)
 precip_decomposed <- decompose(precip_ts_filled)
+```
 
+###  Visualizing
+
+We will be using the homogenous data from Luzern to compliment the Seebodenalp (Rigi) temperature data.
+
+```{r warning=FALSE}
+avg_temp_plot
+```
+
+The plot displays a time series of average temperatures for Engelberg and Luzern, with the x-axis representing the years from approximately 1900 to just beyond the year 2000 and the y-axis indicating temperature in degrees Celsius. Engelberg's temperature is depicted with a red line, while Luzern's temperature is shown with a blue line. Both locations show fluctuations that suggest seasonality and an overall upward trend in temperatures over the century, indicating a rise in average temperatures.
+
+```{r warning=FALSE}
+avg_5temp_plot
+```
+
+```{r warning=FALSE}
+avg_preci_plot
+```
+
+```{r warning=FALSE}
+avg_5preci_plot
+```
+
+```{r}
 # Plotten der saisonalen, trendigen und saisonal bereinigten Komponenten der Temperaturzeitreihe
 plot(temp_decomposed)
+```
 
+```{r}
 # Plotten der saisonalen, trendigen und saisonal bereinigten Komponenten der Niederschlagszeitreihe
 plot(precip_decomposed)
+
 ```
 
 ## Temperature from meteo swiss
