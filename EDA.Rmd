@@ -119,9 +119,13 @@ The plot displays a time series of average temperatures for Engelberg and Luzern
 avg_5temp_plot
 ```
 
+The plot illustrates a time series of average temperatures over a 5-year period for Engelberg (red line) and Luzern (blue line), showing a clear upward trend in temperatures for both locations from 1900 to the 2000s.
+
 ```{r warning=FALSE}
 avg_preci_plot
 ```
+
+The graph shows the average precipitation time series for Engelberg and Luzern, with both locations showing significant variability in precipitation over the years from 1900 to beyond 2000. The Engelberg data is depicted with a red line and exhibits more pronounced spikes, whereas the Luzern data, represented by a blue line, shows somewhat less volatility in average precipitation levels.
 
 ```{r warning=FALSE}
 avg_5preci_plot
@@ -132,11 +136,15 @@ avg_5preci_plot
 plot(temp_decomposed)
 ```
 
+The plot presents a **temperature** decomposition of an additive time series from 1865 to 1890 into three components: observed, trend, and seasonal. The observed component shows the actual time series data with fluctuations, while the trend component indicates a relatively stable or slightly increasing trend over the 25-year period. The seasonal component displays consistent, periodic fluctuations suggesting a regular pattern that repeats annually, while the random component, which represents the residual noise, shows irregularities that cannot be attributed to the trend or seasonal effects.
+
 ```{r}
 # Plotten der saisonalen, trendigen und saisonal bereinigten Komponenten der Niederschlagszeitreihe
 plot(precip_decomposed)
 
 ```
+
+The chart presents a **preciption** decomposition of an additive time series from 1865 to 1890 into three components: observed, trend, and seasonal. The observed component shows the actual time series data with fluctuations, while the trend component indicates a relatively stable or slightly increasing trend over the 25-year period. The seasonal component displays consistent, periodic fluctuations suggesting a regular pattern that repeats annually, while the random component, which represents the residual noise, shows irregularities that cannot be attributed to the trend or seasonal effects.
 
 ## Temperature from meteo swiss
 
@@ -255,6 +263,10 @@ Compared to Engelberg's boxplot, the Seebodenalp boxplot demonstrates a higher m
 timeseries_engelberg
 ```
 
+What we see in this timeseries, is that there are missing data in the 1980s and it shows a seasonality. This is because the data still includes the summer months.
+
 ```{r warning=FALSE}
 timeseries_seeboden
 ```
+
+The data starts from the 1990s and also includes a seasonality aspect as the Engelberg timeseries does. This time series also presents higher temperature than the Engelberg one.
