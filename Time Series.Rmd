@@ -53,7 +53,7 @@ ts_engelberg <- ts(data = engelberg_clean$temp,
                frequency = 365)
 ```
 
-## Engelberg Data only 
+## Engelberg Data only
 
 ### Trend Visualizing
 
