@@ -10,6 +10,8 @@ urlcolor: blue
 
 # EDA
 
+## Temperature from homogenised data source
+
 ```{r}
 # Laden der installierten Pakete
 library(ggplot2)
@@ -105,6 +107,8 @@ plot(temp_decomposed)
 plot(precip_decomposed)
 ```
 
+## Temperature from meteo swiss
+
 ```{r}
 library(tidyverse)
 
@@ -125,10 +129,9 @@ seeboden$time <- as.Date(as.character(seeboden$time), format = "%Y%m%d")
 seeboden_clean <- seeboden %>% select('stn',
                                       'time',
                                       'tre200nn')
-
 ```
 
-Further Data
+**Engelberg**: inspection of the needed variables
 
 ```{r}
 str(engelberg_clean)
@@ -137,6 +140,8 @@ str(engelberg_clean)
 ```{r}
 summary(engelberg_clean)
 ```
+
+**Seeboden**: inspection of the needed variables
 
 ```{r}
 # NA anschauen
@@ -147,51 +152,73 @@ str(seeboden_clean)
 summary(seeboden_clean)
 ```
 
+### Visualizing
+
+**tre200nn** = Lufttemperatur 2 m ¸ber Boden; Nachtminimum (18 UTC Vortag bis 6 UTC aktueller Tag)
+
 ```{r warning=FALSE}
 #### EDA ####
 # Histogram
 hist_engelberg <- ggplot(engelberg_clean, aes(x = tre200nn)) +
   geom_histogram(bins = 30, fill = "blue", color = "black") +
-  labs(title = "Distribution of Engelberg tre200nn", x = "tre200nn", y = "Count")
+  labs(title = "Distribution of Engelberg Temperature", x = "Temperature", y = "Count")
 
 hist_seeboden <- ggplot(seeboden_clean, aes(x = tre200nn)) +
   geom_histogram(bins = 30, fill = "orange", color = "black") +
-  labs(title = "Distribution of Seebodenalp tre200nn", x = "tre200nn", y = "Count")
+  labs(title = "Distribution of Seebodenalp Temperature", x = "Temperature", y = "Count")
 
 # Boxplot
 boxplot_engelberg <- ggplot(engelberg_clean, aes(y = tre200nn)) +
   geom_boxplot(fill = "blue", color = "darkred") +
-  labs(title = "Boxplot of Engelberg tre200nn", y = "tre200nn")
+  labs(title = "Boxplot of Engelberg Temperature", y = "Temperature")
 
 boxplot_seeboden <- ggplot(seeboden_clean, aes(y = tre200nn)) +
   geom_boxplot(fill = "orange", color = "darkred") +
-  labs(title = "Boxplot of Seebodenalp tre200nn", y = "tre200nn")
+  labs(title = "Boxplot of Seebodenalp Temperature", y = "Temperature")
 
 # Timeseries
 timeseries_engelberg <- ggplot(engelberg_clean, aes(x = time, y = tre200nn)) +
   geom_line() +
-  labs(title = "Time Series of Engelberg tre200nn", x = "Time", y = "tre200nn")
+  labs(title = "Time Series of Engelberg Temperature", x = "Time", y = "Temperature")
 
 timeseries_seeboden <- ggplot(seeboden_clean, aes(x = time, y = tre200nn)) +
   geom_line() +
-  labs(title = "Time Series of Seebodenalp tre200nn", x = "Time", y = "tre200nn")
+  labs(title = "Time Series of Seebodenalp Temperature", x = "Time", y = "Temperature")
 ```
+
+#### Histogram
 
 ```{r warning=FALSE}
 hist_engelberg
 ```
 
+This histogram shows the temperature distribution in Engelberg, with most occurrences between 0 and 5 degrees Celsius. The data spans a broad range from below -20 to above 20 degrees Celsius, showing significant variability in temperatures. The distribution appears slightly left-skewed, suggesting that lower temperatures are more frequent than higher ones.
+
 ```{r warning=FALSE}
 hist_seeboden
 ```
+
+This histogram displays the temperature distribution in Seebodenalp (Rigi), with a symmetric shape centered around 5 to 10 degrees Celsius, indicating a normal distribution pattern. The temperatures range from below -20 to above 20 degrees Celsius, with the highest frequency of occurrences in the previously mentioned central range.
+
+Compared to the Engelberg histogram, the Seebodenalp histogram shows a more normal distribution with temperatures clustered around a higher central range, whereas Engelberg's distribution was slightly left-skewed with a mode closer to 0 to 5 degrees Celsius. Additionally, Seebodenalp's temperature variability appears narrower with fewer extreme cold temperatures.
+
+#### Boxplot
 
 ```{r warning=FALSE}
 boxplot_engelberg
 ```
 
+This boxplot of Engelberg temperature shows that the median temperature is slightly above 0 degrees Celsius, and the interquartile range (IQR) spans approximately from 5 to 15 degrees Celsius, indicating that the middle 50% of the temperatures are within this range. The whiskers extend from near -20 degrees Celsius to just above 20 degrees Celsius, suggesting that the majority of temperatures fall within this range, with some outliers on the lower end. The presence of several individual points below the lower whisker indicates outlier temperatures that are significantly colder than the rest.
+
 ```{r warning=FALSE}
 boxplot_seeboden
 ```
+
+The boxplot for Seebodenalp (Rigi) temperature indicates a median temperature close to 10 degrees Celsius with an interquartile range from approximately 0 to 20 degrees Celsius, suggesting that 50% of the temperatures lie within this warmer range. Similar to Engelberg, there are outliers shown below the bottom whisker, indicating occasional extreme cold temperatures.
+
+Compared to Engelberg's boxplot, the Seebodenalp boxplot demonstrates a higher median temperature and a narrower interquartile range, indicating less variability in temperature. Furthermore, while both locations show outliers, Engelberg appears to have a broader range of extreme cold temperatures.
+
+#### Time series
 
 ```{r warning=FALSE}
 timeseries_engelberg
