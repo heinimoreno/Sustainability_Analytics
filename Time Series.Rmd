@@ -232,74 +232,131 @@ plot(f, main = "Forecast for the Next 5 Winter years",
      ylim = c(y_lower, y_upper))
 ```
 
-```{r}
+Now we will be analyzing daily data of the winter months
 
+```{r}
+ts_daily <- ts(data = engelberg_filtered$temp,
+               start = c(1990,01),
+               frequency = 365)
+autoplot(ts_daily)
 ```
 
 ```{r}
-
+# Decompose
+ts_daily_dc <- decompose(ts_daily)
+plot(ts_daily_dc)
 ```
 
 ```{r}
-
+adf.test(ts_daily)
 ```
 
 ```{r}
-
+acf(ts_daily)
+acf(ts_daily_dc$random,na.action=na.pass)
 ```
 
 ```{r}
-
+PAutoCorrelation_m <- pacf(ts_daily_dc$random,na.action=na.pass, plot=FALSE)
+plot(PAutoCorrelation_m, main = "Winter month PACF")
 ```
 
 ```{r}
+# Arima Model
+# # Fitting to PACF 
+window <- list(start=1990,end=2023)
 
+temp_comp_random <- data.frame(Date=time(ts_daily_dc$random), Random=ts_daily_dc$random)
+temp_comp_random %<>% filter(Date>=window$start&Date<window$end)
+temp_comp_random_ts <- ts(temp_comp_random$Random)
+
+arima(temp_comp_random_ts, c(1,0,0))
+```
+
+Interpretation: The ARIMA model output shown indicates that the best-fitting model for the daily temperature data for a winter location during the winter months is an ARIMA(1,0,0), also known as an AR(1) model. The coefficient for \`ar1\` is 0.6737, suggesting a positive autocorrelation where a higher temperature on one day is likely to be followed by a higher temperature the next day. The intercept of 0.0204 suggests a very small upward trend in the temperature data, although its standard error is quite large (0.1619) relative to the coefficient value, indicating that this trend is not statistically significant.
+
+### One Year Forecast
+
+In the following chapter we will be exploring the winter months of 2000 to maybe see how the forecast will be. 2000 has been chosen with a heuristic process because it is not the warmest winter nor the coldest.
+
+```{r}
+one_engelberg <- engelberg_filtered %>% 
+  filter(year(time) == 2000)
+         # > 1999 &
+         #   year(time) < 2003)
+
+two_engelberg <- engelberg_filtered %>% 
+  filter(year(time) == 2001)
 ```
 
 ```{r}
+ts_one <- ts(data = one_engelberg$temp, frequency = 30)
+autoplot(ts_one)
+ts_two <- ts(data = two_engelberg$temp, frequency = 30)
 
+```
+
+```{r Decompose}
+ts_one_dc <- decompose(ts_one)
+plot(ts_one_dc)
 ```
 
 ```{r}
-
+adf.test(ts_one)
 ```
 
 ```{r}
-
+ts_one_diff <- na.omit(diff(ts_one))
+adf.test(ts_one_diff)
 ```
 
 ```{r}
-
+ts_one_diff_dc <- decompose(ts_one_diff)
+plot(ts_one_diff_dc)
 ```
 
 ```{r}
-
+acf(ts_one_diff)
+acf(ts_one_diff_dc$random,na.action=na.pass)
 ```
 
 ```{r}
-
+PAutoCorrelation_m <- pacf(ts_one_diff_dc$random,
+                           na.action=na.pass, plot=FALSE)
+plot(PAutoCorrelation_m, main = "1 winter PACF 2000")
 ```
 
 ```{r}
+window <- list(start=2000,end=2002)
 
+temp_comp_random_one <- data.frame(Date=time(ts_one_dc$random), Random=ts_one_dc$random)
+#temp_comp_random_one %<>% filter(Date>=window$start&Date<window$end)
+temp_comp_random_one_ts <- ts(temp_comp_random_one$Random)
+
+winter_model_dc <- arima(temp_comp_random_ts, c(1,0,0))
 ```
 
 ```{r}
-
+summary(winter_model_dc)
 ```
+
+This model is using the decomposed data. The ARIMA(1,0,0) model summary for daily temperatures during winter months shows a significant positive autocorrelation in temperature data, as indicated by the ar1 coefficient of 0.6737. Error metrics such as the Root Mean Squared Error (RMSE) of 3.201432 and Mean Absolute Error (MAE) of 2.455616 suggest the model's predictions are reasonably close to the actual temperatures, although the Mean Percentage Error (MPE) of -37.91163 indicates a systematic underestimation by the model.
 
 ```{r}
-
+winter_model <- arima(ts_one, c(2,0,0))
+winter_model
 ```
+
+The ARIMA(2,0,0) model for the daily temperature of a winter location indicates a primary autoregressive component at lag 1 (ar1 coefficient of 0.6454) and a much smaller effect at lag 2 (ar2 coefficient of 0.0351), suggesting that past temperatures have a significant influence on future temperatures, with the most recent day having the strongest effect. The negative intercept of -2.7220 may imply a baseline adjustment from the mean temperature, but its practical significance should be cautiously interpreted due to its relatively large standard error of 0.9538 compared to the coefficient value.
 
 ```{r}
-
+f <- forecast(winter_model, level=c(95), h=length(ts_two))
+plot(f)
+# Now add the actual data points.
+#lines(ts_two, col="red")
+forecast_start <- length(f$model$x)
+# lines(seq(forecast_start, forecast_start + length(ts_two) - 1), 
+# ts_two, col="red")
 ```
 
-```{r}
-
-```
-
-```{r}
-
-```
+The plot displays the forecast from an ARIMA(2,0,0) model with a non-zero mean for future values of a time series, likely representing daily temperatures. The forecast shows a leveling off of the temperature values, with the shaded area representing a 95% confidence interval indicating where future observations are likely to fall, with the uncertainty increasing as the forecast extends further into the future.
