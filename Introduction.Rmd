@@ -9,28 +9,30 @@ urlcolor: blue
 ```
 
 # Introduction
-Nestled within Switzerland's alpine landscape, the ski resorts Engelberg-Titlis and Rigi-Kaltbad, 
-alongside the communities of Engelberg and Küssnacht, are facing the challenges posed by a shifting 
-climate. The variability of snowfall has become a critical concern for these winter destinations, 
-which are integral to the local economy due to their draw for tourism. In this context, the role of 
-snowmaking machines emerges as a focal point of investigation for sustaining ski seasons and, by extension, 
-the economic health of these regions.
+Located in the Swiss Alps, the ski resorts Engelberg-Titlis and Rigi-Kaltbad, along with the communities of
+Engelberg and Küssnacht, are facing significant challenges due to climate change. Especially winter tourism is
+crucial for these areas, contributing 1% of Switzerland's GDP and 10-20% of economic output in certain regions.
+The increasingly unpredictable reliability of snowfall, undermines the examination of snowmaking technologies
+to sustain ski resort operations and regional economies.
 
-Our analysis entails a comprehensive review of meteorological and snow cover data spanning from 1990 to 2024, 
-accompanied by an examination of guest occupancy rates from 2013 onwards. This period includes the unique 
-circumstances of the COVID-19 pandemic, necessitating adjusted models to account for the impact on tourism 
-and resort operation.
+The analysis is guided by the principles of Sustainable Development Goals 7 Affordable and Clean Energy,
+8 Decent Work and Economic Growth, and 9 Industry, Innovation, and Infrastructure, focusing on energy efficiency,
+economic sustainability, and innovation in addressing climate change impacts on winter tourism.
 
-Our research navigates through these varied datasets with an eye towards the future. The overarching question 
-we seek to address is one of longevity and adaptability: Can snowmaking technology continue to support ski 
-resort operations in the face of environmental and climatic changes? This inquiry is further refined by our 
-commitment to the principles encapsulated in Sustainable Development Goals 7, 8, and 9, ensuring that our 
-approach to energy efficiency, economic growth, and innovation remains in line with global sustainability efforts.
+Considering th various stakholders involved, including Titlis and Rigi Bergbahnen, the International Ski 
+Federation (FIS), TechnoAlpin, public transportation, and local culture, the analysis adopts a comprehensive
+approach. This investigation encompasses meteorological and snow cover data from 1990 to 2024, alongside guest
+occupancy rates from 2013 onwards. By applying this method the future viability of snowmaking as a method to 
+mitigate climate change effects on ski resorts shall be assessed.
+
+The objective is to evaluate sustainability of snowmaking technology in maintaining ski resort operations against
+changing climate conditions, offering insights into the resilience and adaptability of the winter tourism in 
+Switzerland.
 
 ## Research Question
 In a scientific pursuit to inform strategic foresight for ski resorts, our core research question is articulated 
-as follows: "How might we evaluate the efficacy of snow-making across various ski resorts to ensure optimal planning 
-and sustainability for future seasons?"
+as follows: "How might we predict the duration of effective snow-making in coming years using weather trends, and 
+understand its consequences for winter sports destinations?"
 
 ## Method
 Our investigation employs time series analysis using R to dissect decades of weather and snow data, alongside tourism 
