@@ -26,7 +26,7 @@ library(magrittr)
 
 #homogenisierte Daten
 Engelberg_homogenisiert <- read.csv("Daten/Messreihe_Engelberg.csv")
-temp_homo_ts <- ts(summary_data$Avg_Temperature, start = c(1864, 1), frequency = 12)
+#temp_homo_ts <- ts(summary_data$Avg_Temperature, start = c(1864, 1), frequency = 12)
 
 # Engelberg einlesen
 engelberg <- read.csv("Daten/Engelberg_data.csv",sep=';', na.strings=c('-',''))
@@ -360,3 +360,262 @@ forecast_start <- length(f$model$x)
 ```
 
 The plot displays the forecast from an ARIMA(2,0,0) model with a non-zero mean for future values of a time series, likely representing daily temperatures. The forecast shows a leveling off of the temperature values, with the shaded area representing a 95% confidence interval indicating where future observations are likely to fall, with the uncertainty increasing as the forecast extends further into the future.
+
+## Seebodenalp (Rigi)
+
+```{r}
+kuessnacht <- read.csv("Daten/Seebodenalp_data.csv",sep=';', na.strings=c('-',''))
+
+kuessnacht$time <- as.Date(as.character(kuessnacht$time), format = "%Y%m%d")
+kuessnacht_clean <- kuessnacht %>% select('time',
+                                        'tre200nn') %>% 
+  rename('temp' = 'tre200nn') %>%
+  filter(year(time) > 1989)
+kuessnacht_clean <- na.omit(kuessnacht_clean[!is.na(kuessnacht_clean$temp), ])
+```
+
+### Winter
+
+```{r}
+kuessnacht_filtered <- kuessnacht_clean %>%
+  # Assuming 'time' is already a Date object. If not, convert it first with as.Date()
+  filter(year(time) > 1989) %>%
+  filter(month(time) %in% c(12, 1, 2, 3)) 
+```
+
+Now we will be focusing on monthly days below 0°
+
+```{r}
+monthly_below_zero <- kuessnacht_filtered %>%
+  filter(temp < 0) %>%
+  mutate(year = year(time),
+         month = month(time)) %>%
+  group_by(year, month) %>%
+  summarise(days_below_zero = n(), .groups = "drop") %>% # Drop the grouping
+  mutate(year_month = paste(year, month, sep="-")) %>% # Create year-month column
+  select(year_month, days_below_zero) # Select only the columns you want
+
+monthly_below_zero_k <- monthly_below_zero %>%
+  mutate(year_month = as.Date(paste(year_month, "01", sep="-")))
+```
+
+```{r}
+ts_month_k <- ts(data = monthly_below_zero_k$days_below_zero,
+               start = c(1990,01),
+               frequency = 4)
+autoplot(ts_month_k)
+```
+
+```{r}
+# Decompose
+ts_month_k_dc <- decompose(ts_month_k)
+plot(ts_month_k_dc)
+```
+
+```{r}
+adf.test(ts_month_k)
+```
+
+```{r}
+acf(ts_month_k)
+acf(ts_month_k_dc$random,na.action=na.pass)
+```
+
+```{r}
+pacf(ts_month_k_dc$random,na.action=na.pass)
+```
+
+```{r}
+month_auto_k <- auto.arima(ts_month_k, D=1, d=1)
+month_auto_k
+```
+
+The ARIMA model summary indicates that the best-fitting model for the time series \`ts_month_k\` is an ARIMA(0,1,1)(0,1,2)[4], which suggests a seasonal model with a non-seasonal differencing of 1 and a seasonal differencing of 1 at a seasonal period of 4. The coefficients for the moving average part (ma1) and the first two seasonal moving average parts (sma1 and sma2) are significant, with ma1 being negative, indicating a smoothing effect from the previous value, and sma1 being strongly negative, which may suggest a corrective effect from the past seasonal cycle. The positive sma2 indicates a smaller smoothing effect from two seasons ago. The relatively low AIC, AICC, and BIC values suggest a model that balances goodness of fit with complexity, although model validation against unseen data is needed to confirm its predictive power.
+
+```{r}
+month_auto_k.1 <- auto.arima(ts_month_k)
+month_auto_k.1
+```
+
+```{r}
+f <- forecast(month_auto_k, level=c(95), h=5*4)
+```
+
+```{r}
+# Assuming 'f' is a forecast object that has a 'mean' component
+y_lower <- min(-10, min(f$mean))
+y_upper <- 60
+
+plot(f, main = "Forecast for the Next 5 Winter", 
+     xlab = "Time", ylab = "Forecast",
+     ylim = c(y_lower, y_upper))
+```
+
+We will not be doing any other Time Series Analysis as we did for Engelberg, because for our analysis it is only of importance the below monthly 0° days for the winter months.
+
+## Tourism Data
+
+```{r}
+EB <- read.csv("Daten/Room_Occupancy_Egelberg.csv")
+KS <- read.csv("Daten/Room_Occupancy_Kuessnacht SZ.csv")
+
+```
+
+```{r}
+# Create time series
+freq_monthly <- 12
+Occupancy_Engelberg<-
+  ts(EB$Room.occupancy, start=c(year(min(EB$Date)),yday(min(EB$Date))), frequency=freq_monthly) %>%
+  na_replace(fill=0)
+Occupancy_Kuessnacht<-
+  ts(KS$Room.occupancy, start=c(year(min(KS$Date)),yday(min(KS$Date))), frequency=freq_monthly) %>%
+  na_replace(fill=0)
+```
+
+```{r}
+plot(Occupancy_Engelberg)
+```
+
+```{r}
+plot(Occupancy_Kuessnacht)
+```
+
+```{r}
+# Sationarity test and decomposition
+adf.test(Occupancy_Engelberg,k=0)
+```
+
+```{r}
+adf.test(Occupancy_Engelberg,k=20)
+```
+
+```{r}
+Occupency_Engelberg_comp=decompose(Occupancy_Engelberg)
+plot(Occupency_Engelberg_comp)
+```
+
+```{r}
+Occupency_Kuessnacht_comp=decompose(Occupancy_Kuessnacht)
+plot(Occupency_Kuessnacht_comp)
+```
+
+```{r}
+adf.test(Occupancy_Engelberg,k=3)
+```
+
+```{r}
+acf(Occupency_Engelberg_comp$random,na.action=na.pass)
+```
+
+```{r}
+pacf(Occupency_Engelberg_comp$random,na.action=na.pass)
+pacf(Occupancy_Engelberg)
+```
+
+```{r}
+adf.test(Occupancy_Kuessnacht,k=3)
+```
+
+```{r}
+acf(Occupency_Kuessnacht_comp$random,na.action=na.pass)
+```
+
+```{r}
+pacf(Occupency_Kuessnacht_comp$random,na.action=na.pass)
+pacf(Occupancy_Kuessnacht)
+```
+
+```{r}
+plot(Occupency_Engelberg_comp$random)
+plot(Occupency_Kuessnacht_comp$random)
+```
+
+### Cross Correlation Engelberg
+
+```{r}
+ccf(na.omit(Occupency_Engelberg_comp$random), 
+    na.omit(Occupency_Kuessnacht_comp$random))
+```
+
+Remove all non-winter months
+
+```{r}
+# Delete all months except winter
+EB$Date <- as.Date(EB$Date)
+df_filtered <- EB[format(EB$Date, "%m") %in% c("12", "01", "02", "03"), ]
+KS$Date <- as.Date(KS$Date)
+df2_filtered <- KS[format(KS$Date, "%m") %in% c("12", "01", "02", "03"), ]
+```
+
+```{r}
+#########################################################################################3
+# Time series temperature Engelberg
+df_temp_EN <- read.csv("Daten/Engelberg_monthly_below_zero.csv")
+
+df_temp_EN <- slice(df_temp_EN, -(1:92))
+
+df_filtered <- slice(df_filtered, -42)
+freq_monthly <- 4
+Occupancy_Engelberg_season<-
+  ts(as.numeric(df_filtered$Room.occupancy), frequency=freq_monthly) %>%
+  na_replace(fill=0)
+temp_Engelberg <- 
+  ts(as.numeric(df_temp_EN$days_below_zero), frequency=freq_monthly) %>%
+  na_replace(fill=0)
+```
+
+```{r}
+plot(Occupancy_Engelberg_season)
+plot(temp_Engelberg)
+```
+
+```{r}
+Occupancy_Engelberg_season_comp <- decompose(Occupancy_Engelberg_season)
+temp_Engelberg_comp <- decompose(temp_Engelberg)
+```
+
+```{r}
+plot(Occupancy_Engelberg_season_comp)
+```
+
+```{r}
+plot(temp_Engelberg_comp)
+```
+
+```{r}
+ccf(temp_Engelberg_comp$random, Occupancy_Engelberg_season_comp$random, na.action = na.pass)
+```
+
+### Cross Correlation Küssnacht
+
+```{r}
+df_temp_KS <- read.csv("Daten/kuessnacht_monthly_below_zero.csv")
+
+df_temp_KS <- head(df_temp_KS, -2)
+
+df_temp_KS <- tail(df_temp_KS, 42)
+
+freq_monthly <- 4
+Occupancy_Kuessnacht_season<-
+  ts(as.numeric(df2_filtered$Room.occupancy), frequency=freq_monthly) %>%
+  na_replace(fill=0)
+temp_Kuessnacht <- 
+  ts(as.numeric(df_temp_KS$days_below_zero), frequency=freq_monthly) %>%
+  na_replace(fill=0)
+```
+
+```{r}
+plot(Occupancy_Kuessnacht_season)
+plot(temp_Kuessnacht)
+```
+
+```{r}
+Occupancy_Kuessnacht_season_comp <- decompose(Occupancy_Kuessnacht_season)
+temp_Kuessnacht_comp <- decompose(temp_Kuessnacht)
+plot(Occupancy_Kuessnacht_season_comp)
+plot(temp_Kuessnacht_comp)
+```
+
+```{r}
+ccf(temp_Kuessnacht_comp$random, Occupancy_Kuessnacht_season_comp$random, na.action = na.pass)
+```

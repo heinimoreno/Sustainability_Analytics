@@ -8,9 +8,9 @@ library(lubridate)
 library(tidyr)
 
 # Import Datasets
-EB <- read.csv("~/HSLU/3. Semester/Sustainability/Room_Occupancy_Egelberg.csv")
+EB <- read.csv("Daten/Room_Occupancy_Egelberg.csv")
 View(EB)
-KS <- read.csv("~/HSLU/3. Semester/Sustainability/Room_Occupancy_Kuessnacht SZ.csv")
+KS <- read.csv("Daten/Room_Occupancy_Kuessnacht SZ.csv")
 View(KS)
 
 # Create time series
