@@ -10,6 +10,8 @@ urlcolor: blue
 
 # Time Series
 
+The upcoming chapter aims to explore potential forecasts for the time series data of Engelberg, Rigi, and Tourism. The structure is as follows: Initially, various methods and approaches will be applied to examine the Engelberg station's time series. Subsequently, an analysis of Rigi will be conducted to align it with the tourism data for cross-correlation purposes. Finally, the time series for tourism data at both locations will be evaluated and cross-correlated with the corresponding temperature data.
+
 ```{r load libraries, warning=FALSE, message=FALSE}
 library(tidyverse) # for data wrangling
 library(lubridate) # date manipulation
@@ -22,8 +24,6 @@ library(magrittr)
 ```
 
 ```{r clean files, warning=FALSE, message=FALSE}
-#### Clean Files ####
-
 #homogenisierte Daten
 Engelberg_homogenisiert <- read.csv("Daten/Messreihe_Engelberg.csv")
 #temp_homo_ts <- ts(summary_data$Avg_Temperature, start = c(1864, 1), frequency = 12)
@@ -53,7 +53,7 @@ ts_engelberg <- ts(data = engelberg_clean$temp,
                frequency = 365)
 ```
 
-## Engelberg Data only
+## Engelberg Temperature
 
 ### Trend Visualizing
 
@@ -65,9 +65,11 @@ plot(ts_engelberg)
 abline(engelberg_clean_trend, col = 'red')
 ```
 
+The trendline indicates a slight upward trajectory, reflecting a modest yet positive correlation as time progresses.
+
 ### Excursion: Monthly Data
 
-We take only monthly data, which has been selected via a randomized procedure, to see how the Meteo and homogenous Data look like together.
+We utilize exclusively monthly data, chosen through a randomization process, to examine the relationship between the meteorological data and homogeneous data.
 
 ```{r}
 # >> Monatliche Daten von 1990-2023 mit Trendlinie von Homogen.
@@ -88,11 +90,6 @@ temp_mn_ts <- ts(temp_mn$temp_mn, start=c(temp_mn$Year[1],temp_mn$Month[1]), fre
 ```
 
 ```{r}
-plot(temp_mn_ts)
-```
-
-```{r}
-# Visualisierung des Trendes
 fresh_snow_trend <- lm(temp_mn$temp_mn~temp_mn$Year)
 engelberg_homog_trend <- lm(Engelberg_homogenisiert$Temperature~Engelberg_homogenisiert$Year)
 plot(temp_mn_ts, xlab='Year', ylab='Average Temp.')
@@ -100,7 +97,9 @@ abline(fresh_snow_trend, col = 'red')
 abline(engelberg_homog_trend, col = 'blue')
 ```
 
-We will be exploring how the time series behaves for the whole year data.
+When viewing the monthly temperature data in association with the trend lines derived from both the homogeneous and monthly datasets, there is an observable trend of increasing temperatures in both, with the homogeneous data's trend being somewhat less pronounced.
+
+Our investigation will continue to analyzing the behavior of the time series across the entirety of the yearly data.
 
 ```{r}
 # Yearly Data decomposing
@@ -109,30 +108,26 @@ plot(ts_engelberg_dc)
 ```
 
 ```{r}
-# Stationary?
 adf.test(ts_engelberg)
-## it is stationary
 ```
+
+The time series is stationary.
 
 ```{r}
 acf(ts_engelberg)
-acf(ts_engelberg_dc$random,na.action=na.pass)
+#acf(ts_engelberg_dc$random,na.action=na.pass)
 ```
 
-```{r}
-# Plot the PACF
-pacf(ts_engelberg_dc$random, na.action = na.pass)
-```
+The ACF plot for the time series data exhibits a gradually decreasing autocorrelation from a strong initial value at lag zero. Notably, the autocorrelation at all lags lies above the confidence interval (the dashed blue lines), indicating the presence of significant autocorrelation at these lags and suggesting a non-random pattern within the time series data.
 
 ```{r}
-# Plotting
 PAutoCorrelation <- pacf(ts_engelberg_dc$random, na.action = na.pass, plot=FALSE)
 plot(PAutoCorrelation, main = "Whole Year PACF")
 ```
 
+The plot shows the Partial Autocorrelation Function (PACF) for a given time series, with most of the spikes falling within the confidence interval, which suggests that there are no significant partial autocorrelations at the majority of the lags. This pattern often indicates that an AR(p) model is not needed, as there is no evidence of strong relationships between lagged terms of the series once the effects of intervening lags are removed.
+
 ```{r}
-#Arima
-# # Fitting to PACF 
 window <- list(start=1990,end=2023)
 
 temp_comp_random_y <- data.frame(Date=time(ts_engelberg_dc$random), Random=ts_engelberg_dc$random)
@@ -141,7 +136,7 @@ temp_comp_random_y_ts <- ts(temp_comp_random_y$Random)
 arima(temp_comp_random_y_ts, c(1,0,0))
 ```
 
-The result of this Arima-Model is not a good simulation. Therefore, to focus on our core question: How many days are the Ski resorts able to use the artificial snow, we will be using only the winter months.
+The ARIMA(1,0,0) model output for the time series data indicates a moderate positive autocorrelation with an \`ar1\` coefficient of 0.6528. The intercept is slightly negative at -0.0089, suggesting a small downward shift from the mean, but this is likely not significant given the standard error of 0.0740 is almost as large as the estimate itself.Therefore, to focus on our core question: How many days are the Ski resorts able to use the artificial snow, we will be using only the winter months.
 
 ### Winter
 
@@ -155,7 +150,6 @@ engelberg_filtered <- engelberg_clean %>%
 ```
 
 ```{r}
-# below 0 per month
 monthly_below_zero <- engelberg_filtered %>%
   filter(temp < 0) %>%
   mutate(year = year(time),
@@ -192,18 +186,16 @@ The decomposed time series of monthly days that measured below 0° is stationary
 
 ```{r}
 acf(ts_month)
-acf(ts_month_dc$random,na.action=na.pass)
+# acf(ts_month_dc$random,na.action=na.pass)
 ```
+
+The ACF plot shows that for the time series of monthly days below zero degrees during winter months, there is no significant autocorrelation at any lag, as all the autocorrelation coefficients fall approximately within the confidence interval.
 
 ```{r}
 pacf(ts_month_dc$random,na.action=na.pass)
 ```
 
-```{r}
-# Arima Model 
-month_auto <- auto.arima(ts_month, D=1, d=1)
-month_auto
-```
+The PACF plot shows significant partial autocorrelation at lag 1, as the bar exceeds the confidence interval (dashed blue lines). This implies a potential relationship between each value in the time series and the value at the previous time step, after accounting for other lagged relationships.
 
 ```{r}
 month_auto.1 <- auto.arima(ts_month)
@@ -214,25 +206,17 @@ month_auto.1
 
 ```{r}
 # Forecasting
-f <- forecast(month_auto, level=c(95), h=5*4)
+f <- forecast(month_auto.1, level=c(95), h=5*4)
 
 
 # Plotting the forecast
-plot(f, main = "Forecast for the Next 5 Winter years", 
+plot(f, main = "Forecast for the Next 5 Winters", 
      xlab = "Time", ylab = "Forecast")
 ```
 
-```{r}
-# Assuming 'f' is a forecast object that has a 'mean' component
-y_lower <- min(-10, min(f$mean))
-y_upper <- 60
+The graph depicts a time series forecast extending five years beyond the last observed data point, around 2020, for what appears to be a measure such as temperature or precipitation during winter seasons. The forecast, shown in blue, indicates a relatively stable pattern with slight fluctuations around a mean value, and the grey shaded area represents the 95% confidence interval, indicating the range within which future values are expected to fall.
 
-plot(f, main = "Forecast for the Next 5 Winter years", 
-     xlab = "Time", ylab = "Forecast",
-     ylim = c(y_lower, y_upper))
-```
-
-Now we will be analyzing daily data of the winter months
+We are now proceeding to examine the **daily** data from the winter months.
 
 ```{r}
 ts_daily <- ts(data = engelberg_filtered$temp,
@@ -251,10 +235,14 @@ plot(ts_daily_dc)
 adf.test(ts_daily)
 ```
 
+The data is stationary.
+
 ```{r}
 acf(ts_daily)
-acf(ts_daily_dc$random,na.action=na.pass)
+# acf(ts_daily_dc$random,na.action=na.pass)
 ```
+
+The ACF plot for daily winter data shows strong positive autocorrelation at lag zero, which quickly decreases but remains significant up to around lag 10, as indicated by the bars extending above the blue dashed confidence interval line. This persistent significant autocorrelation suggests a consistent pattern in the data across consecutive days.
 
 ```{r}
 PAutoCorrelation_m <- pacf(ts_daily_dc$random,na.action=na.pass, plot=FALSE)
@@ -291,9 +279,8 @@ two_engelberg <- engelberg_filtered %>%
 
 ```{r}
 ts_one <- ts(data = one_engelberg$temp, frequency = 30)
-autoplot(ts_one)
+plot(ts_one, main = "Time Series for one winter year")
 ts_two <- ts(data = two_engelberg$temp, frequency = 30)
-
 ```
 
 ```{r Decompose}
@@ -305,10 +292,14 @@ plot(ts_one_dc)
 adf.test(ts_one)
 ```
 
+The Time series for the one year is not stationary.
+
 ```{r}
 ts_one_diff <- na.omit(diff(ts_one))
 adf.test(ts_one_diff)
 ```
+
+With doing a difference it is stationary.
 
 ```{r}
 ts_one_diff_dc <- decompose(ts_one_diff)
@@ -317,14 +308,18 @@ plot(ts_one_diff_dc)
 
 ```{r}
 acf(ts_one_diff)
-acf(ts_one_diff_dc$random,na.action=na.pass)
+# acf(ts_one_diff_dc$random,na.action=na.pass)
 ```
+
+The ACF shows a significance at the first lag and then less and less.
 
 ```{r}
 PAutoCorrelation_m <- pacf(ts_one_diff_dc$random,
                            na.action=na.pass, plot=FALSE)
 plot(PAutoCorrelation_m, main = "1 winter PACF 2000")
 ```
+
+The PACF plot for one winter's daily temperatures indicates significant negative partial autocorrelation at the first lag, as the corresponding bar extends below the blue dashed confidence interval line. This suggests that once the effect of the immediate past day's temperature is accounted for, the next day's temperature tends to move in the opposite direction.
 
 ```{r}
 window <- list(start=2000,end=2002)
@@ -362,6 +357,8 @@ forecast_start <- length(f$model$x)
 The plot displays the forecast from an ARIMA(2,0,0) model with a non-zero mean for future values of a time series, likely representing daily temperatures. The forecast shows a leveling off of the temperature values, with the shaded area representing a 95% confidence interval indicating where future observations are likely to fall, with the uncertainty increasing as the forecast extends further into the future.
 
 ## Seebodenalp (Rigi)
+
+Our analysis for the Rigi location will focus exclusively on the time series of monthly days with temperatures falling below 0°C.
 
 ```{r}
 kuessnacht <- read.csv("Daten/Seebodenalp_data.csv",sep=';', na.strings=c('-',''))
@@ -416,10 +413,14 @@ plot(ts_month_k_dc)
 adf.test(ts_month_k)
 ```
 
+The days per month time series is stationary.
+
 ```{r}
 acf(ts_month_k)
-acf(ts_month_k_dc$random,na.action=na.pass)
+#acf(ts_month_k_dc$random,na.action=na.pass)
 ```
+
+The ACF plot shows a good lag.
 
 ```{r}
 pacf(ts_month_k_dc$random,na.action=na.pass)
@@ -458,7 +459,6 @@ We will not be doing any other Time Series Analysis as we did for Engelberg, bec
 ```{r}
 EB <- read.csv("Daten/Room_Occupancy_Egelberg.csv")
 KS <- read.csv("Daten/Room_Occupancy_Kuessnacht SZ.csv")
-
 ```
 
 ```{r}
@@ -485,14 +485,16 @@ plot(Occupancy_Kuessnacht)
 adf.test(Occupancy_Engelberg,k=0)
 ```
 
-```{r}
-adf.test(Occupancy_Engelberg,k=20)
-```
+The time series for occupancy is stationary.
+
+Engelberg Decomposition
 
 ```{r}
 Occupency_Engelberg_comp=decompose(Occupancy_Engelberg)
 plot(Occupency_Engelberg_comp)
 ```
+
+Rigi Decomposition:
 
 ```{r}
 Occupency_Kuessnacht_comp=decompose(Occupancy_Kuessnacht)
@@ -500,34 +502,30 @@ plot(Occupency_Kuessnacht_comp)
 ```
 
 ```{r}
-adf.test(Occupancy_Engelberg,k=3)
-```
-
-```{r}
 acf(Occupency_Engelberg_comp$random,na.action=na.pass)
 ```
 
-```{r}
-pacf(Occupency_Engelberg_comp$random,na.action=na.pass)
-pacf(Occupancy_Engelberg)
-```
+The ACF for Engelberg shows significance at a few lags.
 
 ```{r}
-adf.test(Occupancy_Kuessnacht,k=3)
+pacf(Occupency_Engelberg_comp$random,na.action=na.pass)
+#pacf(Occupancy_Engelberg)
 ```
 
 ```{r}
 acf(Occupency_Kuessnacht_comp$random,na.action=na.pass)
 ```
 
+The ACF for Rigi shows significance at a few lags.
+
 ```{r}
-pacf(Occupency_Kuessnacht_comp$random,na.action=na.pass)
+#pacf(Occupency_Kuessnacht_comp$random,na.action=na.pass)
 pacf(Occupancy_Kuessnacht)
 ```
 
 ```{r}
-plot(Occupency_Engelberg_comp$random)
-plot(Occupency_Kuessnacht_comp$random)
+# plot(Occupency_Engelberg_comp$random)
+# plot(Occupency_Kuessnacht_comp$random)
 ```
 
 ### Cross Correlation Engelberg
