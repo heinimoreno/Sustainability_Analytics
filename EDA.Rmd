@@ -105,7 +105,7 @@ temp_decomposed <- decompose(temp_ts_filled)
 precip_decomposed <- decompose(precip_ts_filled)
 ```
 
-###  Visualizing
+###  Visualizations
 
 We will be using the homogenous data from Luzern to compliment the Seebodenalp (Rigi) temperature data.
 
@@ -146,7 +146,7 @@ plot(precip_decomposed)
 
 The chart presents a **preciption** decomposition of an additive time series from 1865 to 1890 into three components: observed, trend, and seasonal. The observed component shows the actual time series data with fluctuations, while the trend component indicates a relatively stable or slightly increasing trend over the 25-year period. The seasonal component displays consistent, periodic fluctuations suggesting a regular pattern that repeats annually, while the random component, which represents the residual noise, shows irregularities that cannot be attributed to the trend or seasonal effects.
 
-## Temperature from meteo swiss
+## Temperature from Meteo Swiss
 
 ```{r}
 library(tidyverse)
