@@ -191,7 +191,7 @@ str(seeboden_clean)
 summary(seeboden_clean)
 ```
 
-### Visualizing
+### Visualizations
 
 **tre200nn** = Lufttemperatur 2 m ¸ber Boden; Nachtminimum (18 UTC Vortag bis 6 UTC aktueller Tag)
 
@@ -257,7 +257,7 @@ The boxplot for Seebodenalp (Rigi) temperature indicates a median temperature cl
 
 Compared to Engelberg's boxplot, the Seebodenalp boxplot demonstrates a higher median temperature and a narrower interquartile range, indicating less variability in temperature. Furthermore, while both locations show outliers, Engelberg appears to have a broader range of extreme cold temperatures.
 
-#### Time series
+#### Historic Time Series
 
 ```{r warning=FALSE}
 timeseries_engelberg

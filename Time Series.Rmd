@@ -55,7 +55,7 @@ ts_engelberg <- ts(data = engelberg_clean$temp,
 
 ## Engelberg Temperature
 
-### Trend Visualizing
+### Trend Visualization
 
 ```{r}
 # > Tägliche Daten von 1990-2023
@@ -456,6 +456,8 @@ We will not be doing any other Time Series Analysis as we did for Engelberg, bec
 
 ## Tourism Data
 
+In this chapter, we‘re going to analyze data showing the room occupancy in percent for Engelberg and Küssnacht, in order to cross-correlate it with the temperature data we already used above.
+
 ```{r}
 EB <- read.csv("Daten/Room_Occupancy_Egelberg.csv")
 KS <- read.csv("Daten/Room_Occupancy_Kuessnacht SZ.csv")
@@ -472,9 +474,13 @@ Occupancy_Kuessnacht<-
   na_replace(fill=0)
 ```
 
+The following time series shows the room occupancy in Engelberg for every month in percent.
+
 ```{r}
 plot(Occupancy_Engelberg)
 ```
+
+And here the same for Küssnacht.
 
 ```{r}
 plot(Occupancy_Kuessnacht)
@@ -494,12 +500,18 @@ Occupency_Engelberg_comp=decompose(Occupancy_Engelberg)
 plot(Occupency_Engelberg_comp)
 ```
 
+Especially the seasonality is interesting here. Engelberg has two peaks per period, indicating that both, a strong summer and winter season is present. Looking at the trend, the decrease in room occupancy during the COVID-19 pandemic is clearly visible.
+
 Rigi Decomposition:
 
 ```{r}
 Occupency_Kuessnacht_comp=decompose(Occupancy_Kuessnacht)
 plot(Occupency_Kuessnacht_comp)
 ```
+
+In contrast to the Engelberg data, the seasonality of the data showing room occupancy in Küssnacht only has one peak per period, indicating that the main season is the summer. The trend however looks very similar to Engelberg.
+
+Let's have a look at the random parts of both time series.
 
 ```{r}
 acf(Occupency_Engelberg_comp$random,na.action=na.pass)
@@ -512,6 +524,8 @@ pacf(Occupency_Engelberg_comp$random,na.action=na.pass)
 #pacf(Occupancy_Engelberg)
 ```
 
+So does the PACF.
+
 ```{r}
 acf(Occupency_Kuessnacht_comp$random,na.action=na.pass)
 ```
@@ -523,19 +537,21 @@ The ACF for Rigi shows significance at a few lags.
 pacf(Occupancy_Kuessnacht)
 ```
 
+So does the PACF.
+
 ```{r}
 # plot(Occupency_Engelberg_comp$random)
 # plot(Occupency_Kuessnacht_comp$random)
 ```
 
-### Cross Correlation Engelberg
+### Cross-Correlation Engelberg
 
 ```{r}
-ccf(na.omit(Occupency_Engelberg_comp$random), 
-    na.omit(Occupency_Kuessnacht_comp$random))
+#ccf(na.omit(Occupency_Engelberg_comp$random), 
+#    na.omit(Occupency_Kuessnacht_comp$random))
 ```
 
-Remove all non-winter months
+Since we’re only interested in the winter season, we’re going to remove all non-winter months. This means that only the months of December, January, February, and March of every year will remain in the data.
 
 ```{r}
 # Delete all months except winter
@@ -562,6 +578,8 @@ temp_Engelberg <-
   na_replace(fill=0)
 ```
 
+The following two plots show the time series we’re going to do the cross-correlation with. First, the room occupancy for Engelberg and second, the temperature data, showing the number of days the air temperature drops under 0 degrees Celsius for every month. In both time series, only the four months of the winter season are contained, as described above.
+
 ```{r}
 plot(Occupancy_Engelberg_season)
 plot(temp_Engelberg)
@@ -576,15 +594,21 @@ temp_Engelberg_comp <- decompose(temp_Engelberg)
 plot(Occupancy_Engelberg_season_comp)
 ```
 
+The decomposition of the room occupancy data shows that now, only the winter season is present in the data. The COVID-19 pandemic is still visible in the trend.
+
 ```{r}
 plot(temp_Engelberg_comp)
 ```
+
+The decomposition of the temperature data shows a very even seasonality and a trend, that seems to decrease slightly.
 
 ```{r}
 ccf(temp_Engelberg_comp$random, Occupancy_Engelberg_season_comp$random, na.action = na.pass)
 ```
 
-### Cross Correlation Küssnacht
+The cross-correlation doesn’t show a significant correlation between the room occupancy and the temperature data. The reason for this might be that the ski resort of Engelberg is located at a high altitude and therefore good skiing is possible, even when the temperature is high. Bad conditions for technical snow-making therefore don’t influence the room occupancy, as skiing is still possible.
+
+### Cross-Correlation Küssnacht
 
 ```{r}
 df_temp_KS <- read.csv("Daten/kuessnacht_monthly_below_zero.csv")
@@ -602,6 +626,8 @@ temp_Kuessnacht <-
   na_replace(fill=0)
 ```
 
+The following two plots show the time series we’re going to do the next cross-correlation with. First, the room occupancy for Küssnacht and second, the temperature data, showing the number of days the air temperature drops under 0 degrees Celsius for every month. In both time series, only the four months of the winter season are contained, as described above.
+
 ```{r}
 plot(Occupancy_Kuessnacht_season)
 plot(temp_Kuessnacht)
@@ -614,6 +640,10 @@ plot(Occupancy_Kuessnacht_season_comp)
 plot(temp_Kuessnacht_comp)
 ```
 
+The decompositions are very similar to the ones above concerning Engelberg. However, the trend in the temperature data seems to decrease stronger here.
+
 ```{r}
 ccf(temp_Kuessnacht_comp$random, Occupancy_Kuessnacht_season_comp$random, na.action = na.pass)
 ```
+
+Again, the cross-correlation doesn’t show a significant correlation between temperature and room occupancy. The possible reason for this is the small size of the ski resort in Küssnacht. As the main season for tourism in Küssnacht is the summer, the snow conditions might not have a significant influence on the room occupancy at all, as two ski lifts might attract more day tourists than hotel guests. 
